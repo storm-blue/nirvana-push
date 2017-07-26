@@ -3,7 +3,7 @@ package com.nirvana.push.protocol;
 /**
  * 协议包头。
  */
-public class Header implements Byteable {
+public class Header extends AbstactByteable {
 
     private byte[] bytes;
 
@@ -16,6 +16,6 @@ public class Header implements Byteable {
     }
 
     public byte[] getBytes() {
-        return new byte[0];
+        return bytes;
     }
 }

@@ -3,7 +3,7 @@ package com.nirvana.push.protocol;
 /**
  * 包尾。
  */
-public class Footer implements Byteable {
+public class Footer extends AbstactByteable {
 
     private static final Footer footer = new Footer();
 

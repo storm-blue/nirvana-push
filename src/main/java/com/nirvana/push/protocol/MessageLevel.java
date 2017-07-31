@@ -1,5 +1,7 @@
 package com.nirvana.push.protocol;
 
+import com.nirvana.push.utils.CodeEnumerator;
+
 /**
  * 消息等级。
  */
@@ -24,5 +26,10 @@ public enum MessageLevel {
         return code;
     }
 
+    private static final CodeEnumerator<MessageLevel> enumerator = new CodeEnumerator<>(MessageLevel.class);
+
+    public static MessageLevel get(int code) {
+        return enumerator.get(code);
+    }
 
 }

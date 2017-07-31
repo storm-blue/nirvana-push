@@ -1,5 +1,7 @@
 package com.nirvana.push.protocol;
 
+import com.nirvana.push.utils.CodeEnumerator;
+
 public enum MessageCharset {
 
     UTF8(0x01, "UTF-8"), UTF16(0x02, "UTF-16"), GB2312(0x03, "GB2312"), GB18030(0x04, "GB18030");
@@ -19,5 +21,11 @@ public enum MessageCharset {
 
     public String getCharset() {
         return charset;
+    }
+
+    private static final CodeEnumerator<MessageCharset> enumerator = new CodeEnumerator<>(MessageCharset.class);
+
+    public static MessageCharset get(int code) {
+        return enumerator.get(code);
     }
 }

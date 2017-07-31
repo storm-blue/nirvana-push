@@ -17,6 +17,12 @@
             <version>4.1.13.Final</version>
         </dependency>
 
+        <dependency>
+            <groupId>com.nirvana</groupId>
+            <artifactId>nirvana-common</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+
     </dependencies>
 
     <build>

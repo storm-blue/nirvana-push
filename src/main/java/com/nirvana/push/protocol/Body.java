@@ -1,34 +1,35 @@
 package com.nirvana.push.protocol;
 
-import java.io.UnsupportedEncodingException;
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
+
+import java.nio.charset.Charset;
 
 /**
  * 包体。
  */
-public class Body extends AbstactByteable {
+public class Body extends AbstactOutputable {
 
     private String content;
 
     private String charset;
 
+    private ByteBuf buf;
+
+    public Body(ByteBuf byteBuf, String charset) {
+        content = byteBuf.toString(Charset.forName(charset));
+        this.charset = charset;
+        buf = byteBuf;
+    }
+
     public Body(byte[] bytes, int index, int length, String charset) {
-        try {
-            this.charset = charset;
-            setBytes(bytes, index, length);
-            content = new String(bytes, index, length, charset);
-        } catch (UnsupportedEncodingException ignore) {
-        }
+        this(Unpooled.wrappedBuffer(bytes, index, length), charset);
     }
 
     public Body(String content, String charset) {
         this.content = content;
-        try {
-            byte[] bytes = content.getBytes(charset);
-            setBytes(bytes, 0, bytes.length);
-            this.charset = charset;
-        } catch (UnsupportedEncodingException e) {
-            throw new RuntimeException("UnsupportedEncoding:" + charset);
-        }
+        this.charset = charset;
+        buf = Unpooled.copiedBuffer(content, Charset.forName(charset));
     }
 
     public String getContent() {
@@ -40,10 +41,16 @@ public class Body extends AbstactByteable {
     }
 
     @Override
+    public ByteBuf getByteBuf() {
+        return buf;
+    }
+
+    @Override
     public String toString() {
         return "Body{" +
                 "content='" + content + '\'' +
                 ", charset='" + charset + '\'' +
                 '}';
     }
+
 }

@@ -1,9 +1,12 @@
 package com.nirvana.push.protocol;
 
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
+
 /**
  * 协议包。提供获取包信息操作。
  */
-public class Package extends ByteableArray {
+public class Package extends AbstractOutputableArray {
 
     private Header header;
 
@@ -11,12 +14,16 @@ public class Package extends ByteableArray {
 
     private Footer footer = Footer.getFooter();
 
-    public Package(byte[] bytes) {
-        header = new Header(bytes);
-        body = new Body(bytes, Header.HEADER_SIZE, header.getPackageLength(), header.getMessageCharset().getCharset());
+    public Package(ByteBuf byteBuf) {
+        header = new Header(byteBuf.slice(0, Header.HEADER_SIZE));
+        body = new Body(byteBuf.slice(Header.HEADER_SIZE, header.getPackageLength()), header.getMessageCharset().getCharset());
         addElement(header);
         addElement(body);
         addElement(footer);
+    }
+
+    public Package(byte[] bytes) {
+        this(Unpooled.wrappedBuffer(bytes));
     }
 
     public Package(MessageType type, String content) {
@@ -45,10 +52,6 @@ public class Package extends ByteableArray {
 
     public String getCharset() {
         return body.getCharset();
-    }
-
-    public int size() {
-        return 0;
     }
 
     public int contentSize() {

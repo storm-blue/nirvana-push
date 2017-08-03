@@ -10,8 +10,14 @@ import java.io.OutputStream;
  */
 public interface Outputter {
 
+    /**
+     * 输出到ChannelHandlerContext。
+     */
     void output(ChannelHandlerContext context);
 
+    /**
+     * 输出到OutputStream。
+     */
     void output(OutputStream outputStream) throws IOException;
 
 }

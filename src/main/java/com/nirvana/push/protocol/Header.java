@@ -1,13 +1,15 @@
 package com.nirvana.push.protocol;
 
 import com.nirvana.push.utils.BitRuler;
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 import java.util.Arrays;
 
 /**
  * 协议包头。
  */
-public class Header extends AbstactByteable {
+public class Header extends AbstactOutputable {
 
     public static final int HEADER_SIZE = 3;
 
@@ -19,29 +21,35 @@ public class Header extends AbstactByteable {
 
     private int packageLength = 0;
 
+    private ByteBuf buf;
+
+    public Header(ByteBuf byteBuf) {
+        if (HEADER_SIZE > byteBuf.readableBytes()) {
+            throw new IllegalArgumentException("package header must be 3 bytes");
+        }
+        int headerInt = byteBuf.getMedium(0);
+        messageType = MessageType.get(BitRuler.r(headerInt, 22, 24));
+        if (messageType == null) {
+            throw new IllegalArgumentException("Wrong message type.");
+        }
+        messageLevel = MessageLevel.get(BitRuler.r(headerInt, 20, 21));
+        if (messageLevel == null) {
+            throw new IllegalArgumentException("Wrong message level.");
+        }
+        messageCharset = MessageCharset.get(BitRuler.r(headerInt, 17, 19));
+        if (messageCharset == null) {
+            throw new IllegalArgumentException("Wrong message charset.");
+        }
+        packageLength = BitRuler.r(headerInt, 1, 16);
+        buf = byteBuf;
+    }
+
     public Header(byte[] bytes) {
         this(bytes, 0);
     }
 
     public Header(byte[] bytes, int index) {
-        if (index + HEADER_SIZE > bytes.length) {
-            throw new IllegalArgumentException("package header must be 3 bytes");
-        }
-
-        setBytes(bytes, 0, HEADER_SIZE);
-        messageType = MessageType.get(BitRuler.r(bytes[index], 6, 8));
-        if (messageType == null) {
-            throw new IllegalArgumentException("Wrong message type.");
-        }
-        messageLevel = MessageLevel.get(BitRuler.r(bytes[index], 4, 5));
-        if (messageLevel == null) {
-            throw new IllegalArgumentException("Wrong message level.");
-        }
-        messageCharset = MessageCharset.get(BitRuler.r(bytes[index], 1, 3));
-        if (messageCharset == null) {
-            throw new IllegalArgumentException("Wrong message charset.");
-        }
-        packageLength = bytes[index + 1] << 8 | bytes[index + 2];
+        this(Unpooled.wrappedBuffer(bytes, index, HEADER_SIZE));
     }
 
     public Header(MessageType type, MessageLevel level, MessageCharset charset, int length) {
@@ -52,7 +60,7 @@ public class Header extends AbstactByteable {
         byte b1 = (byte) ((type.getCode() << 5) | (level.getCode() << 3) | charset.getCode());
         byte b2 = (byte) BitRuler.r(length, 9, 16);
         byte b3 = (byte) BitRuler.r(length, 1, 8);
-        setBytes(new byte[]{b1, b2, b3});
+        buf = Unpooled.wrappedBuffer(new byte[]{b1, b2, b3});
     }
 
     public MessageType getMessageType() {
@@ -69,6 +77,11 @@ public class Header extends AbstactByteable {
 
     public int getPackageLength() {
         return packageLength;
+    }
+
+    @Override
+    public ByteBuf getByteBuf() {
+        return buf;
     }
 
     @Override

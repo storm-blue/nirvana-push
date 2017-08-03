@@ -2,12 +2,14 @@ package com.nirvana.push.protocol;
 
 import com.nirvana.push.utils.BitRuler;
 
+import java.util.Arrays;
+
 /**
  * 协议包头。
  */
 public class Header extends AbstactByteable {
 
-    private byte[] bytes;
+    public static final int HEADER_SIZE = 3;
 
     private MessageType messageType;
 
@@ -18,23 +20,28 @@ public class Header extends AbstactByteable {
     private int packageLength = 0;
 
     public Header(byte[] bytes) {
-        if (bytes.length != 3) {
+        this(bytes, 0);
+    }
+
+    public Header(byte[] bytes, int index) {
+        if (index + HEADER_SIZE > bytes.length) {
             throw new IllegalArgumentException("package header must be 3 bytes");
         }
-        this.bytes = bytes;
-        messageType = MessageType.get(BitRuler.r(bytes[0], 6, 8));
+
+        setBytes(bytes, 0, HEADER_SIZE);
+        messageType = MessageType.get(BitRuler.r(bytes[index], 6, 8));
         if (messageType == null) {
             throw new IllegalArgumentException("Wrong message type.");
         }
-        messageLevel = MessageLevel.get(BitRuler.r(bytes[0], 4, 5));
+        messageLevel = MessageLevel.get(BitRuler.r(bytes[index], 4, 5));
         if (messageLevel == null) {
             throw new IllegalArgumentException("Wrong message level.");
         }
-        messageCharset = MessageCharset.get(BitRuler.r(bytes[0], 1, 3));
+        messageCharset = MessageCharset.get(BitRuler.r(bytes[index], 1, 3));
         if (messageCharset == null) {
             throw new IllegalArgumentException("Wrong message charset.");
         }
-        packageLength = bytes[1] << 8 | bytes[2];
+        packageLength = bytes[index + 1] << 8 | bytes[index + 2];
     }
 
     public Header(MessageType type, MessageLevel level, MessageCharset charset, int length) {
@@ -45,14 +52,7 @@ public class Header extends AbstactByteable {
         byte b1 = (byte) ((type.getCode() << 5) | (level.getCode() << 3) | charset.getCode());
         byte b2 = (byte) BitRuler.r(length, 9, 16);
         byte b3 = (byte) BitRuler.r(length, 1, 8);
-        bytes = new byte[]{b1, b2, b3};
-    }
-
-    public Header() {
-    }
-
-    public byte[] getBytes() {
-        return bytes;
+        setBytes(new byte[]{b1, b2, b3});
     }
 
     public MessageType getMessageType() {
@@ -69,5 +69,15 @@ public class Header extends AbstactByteable {
 
     public int getPackageLength() {
         return packageLength;
+    }
+
+    @Override
+    public String toString() {
+        return "Header{" +
+                "messageType=" + messageType +
+                ", messageLevel=" + messageLevel +
+                ", messageCharset=" + messageCharset +
+                ", packageLength=" + packageLength +
+                '}';
     }
 }

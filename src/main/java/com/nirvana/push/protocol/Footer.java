@@ -7,16 +7,15 @@ public class Footer extends AbstactByteable {
 
     private static final Footer footer = new Footer();
 
+    public static final int FOOT_SIZE = 2;
+
     private Footer() {
+        setBytes(new byte[]{(byte) 0xff, (byte) 0xff});
     }
 
     public static Footer getFooter() {
         return footer;
     }
 
-    private static final byte[] bytes = new byte[]{(byte) 0xff, (byte) 0xff};
 
-    public byte[] getBytes() {
-        return bytes;
-    }
 }

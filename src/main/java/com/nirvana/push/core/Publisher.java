@@ -4,6 +4,7 @@ import java.util.Collection;
 
 /**
  * 消息发布者。
+ * Created by Nirvana on 2017/8/3.
  */
 public interface Publisher {
 

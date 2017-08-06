@@ -6,6 +6,9 @@ import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 
+/**
+ * Created by Nirvana on 2017/8/1.
+ */
 public class PushServer {
 
     private static final int port = 32222;

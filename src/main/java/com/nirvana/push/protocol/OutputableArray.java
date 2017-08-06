@@ -13,8 +13,7 @@ import java.util.List;
 
 /**
  * 可输出数组类。使用<code>CompositeByteBuf</code>的特性来组合子元素，提供输出服务。
- *
- * @author Nirvana
+ * Created by Nirvana on 2017/8/2.
  */
 public class OutputableArray extends AbstactOutputable {
 

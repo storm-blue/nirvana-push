@@ -9,6 +9,7 @@ import java.util.Arrays;
 
 /**
  * 协议包头。
+ * Created by Nirvana on 2017/8/2.
  */
 public class Header extends AbstactOutputable {
 

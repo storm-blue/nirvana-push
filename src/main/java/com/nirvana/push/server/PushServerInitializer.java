@@ -5,6 +5,9 @@ import io.netty.channel.ChannelPipeline;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.handler.codec.string.StringEncoder;
 
+/**
+ * Created by Nirvana on 2017/8/1.
+ */
 public class PushServerInitializer extends ChannelInitializer<SocketChannel> {
 
     @Override

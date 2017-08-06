@@ -7,6 +7,9 @@ import io.netty.channel.SimpleChannelInboundHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * Created by Nirvana on 2017/8/1.
+ */
 @ChannelHandler.Sharable
 public class PushServerHandler extends SimpleChannelInboundHandler<Package> {
 

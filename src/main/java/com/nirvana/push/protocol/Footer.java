@@ -5,6 +5,7 @@ import io.netty.buffer.Unpooled;
 
 /**
  * 包尾。
+ * Created by Nirvana on 2017/8/2.
  */
 public class Footer extends AbstactOutputable {
 

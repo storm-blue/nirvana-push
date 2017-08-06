@@ -2,6 +2,10 @@ package com.nirvana.push.protocol;
 
 import com.nirvana.push.utils.CodeEnumerator;
 
+/**
+ * 消息编码。
+ * Created by Nirvana on 2017/8/1.
+ */
 public enum MessageCharset {
 
     UTF8(0x01, "UTF-8"), UTF16(0x02, "UTF-16"), GB2312(0x03, "GB2312"), GB18030(0x04, "GB18030");

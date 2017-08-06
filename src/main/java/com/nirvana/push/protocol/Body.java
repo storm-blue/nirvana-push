@@ -7,6 +7,7 @@ import java.nio.charset.Charset;
 
 /**
  * 包体。
+ * Created by Nirvana on 2017/8/2.
  */
 public class Body extends AbstactOutputable {
 

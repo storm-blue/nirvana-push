@@ -4,6 +4,10 @@ import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * 有code码的枚举型包装类。
+ * Created by Nirvana on 2017/8/1.
+ */
 @SuppressWarnings("JavaReflectionMemberAccess")
 public class CodeEnumerator<T extends Enum> {
 

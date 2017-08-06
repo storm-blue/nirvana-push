@@ -8,6 +8,7 @@ import java.io.OutputStream;
 
 /**
  * 只是简单实现了输出接口。
+ * Created by Nirvana on 2017/8/2.
  */
 public abstract class AbstactOutputable implements Outputable, Outputter {
 

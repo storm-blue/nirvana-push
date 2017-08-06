@@ -15,10 +15,11 @@ import java.util.List;
 
 /**
  * 包的帧解码器。
+ * <p>
  * 继承<code>ByteToMessageDecoder</code>的类不能被<code>@Sharable</code>注解。
  * 这就意味着永远只有一个线程操作此对象。可以忽略线程安全问题。
- *
- * @author Nirvana
+ * <p>
+ * Created by Nirvana on 2017/8/4.
  */
 public class PackageFrameDecoder extends ByteToMessageDecoder {
 
@@ -52,9 +53,6 @@ public class PackageFrameDecoder extends ByteToMessageDecoder {
     /*Footer*/
     private Footer footer = Footer.getFooter();
 
-    /*当进入recovery模式之后，记录可回收的数据。*/
-    private CompositeByteBuf recyclable = Unpooled.compositeBuffer(4);
-
     public PackageFrameDecoder() {
     }
 
@@ -62,11 +60,10 @@ public class PackageFrameDecoder extends ByteToMessageDecoder {
         this.maxFrameSize = maxFrameSize > Package.MAX_LENGTH ? Package.MAX_LENGTH : maxFrameSize;
     }
 
-
     @Override
     protected void decode(ChannelHandlerContext ctx, ByteBuf in, List<Object> out) throws Exception {
 
-        while (recyclable.readableBytes() + in.readableBytes() >= currentNeedReadableSize) {
+        while (in.readableBytes() >= currentNeedReadableSize) {
 
             //工作在Header处理模式。
             if (workMode == MODE_HEADER_PROCESSING) {
@@ -85,81 +82,60 @@ public class PackageFrameDecoder extends ByteToMessageDecoder {
 
             //工作在恢复模式。
             else if (workMode == MODE_RECOVERY) {
+                doRecovery(ctx, in, out);
             }
         }
     }
 
-
     private void doHeaderProcessing(ChannelHandlerContext ctx, ByteBuf in, List<Object> out) {
-        ByteBuf buf = readRecyclableFirst(in, currentNeedReadableSize);
+        in.markReaderIndex();
+        ByteBuf buf = in.readBytes(currentNeedReadableSize);
         try {
             header = new Header(buf);
             if (header.getPayloadSize() > maxFrameSize - Header.HEADER_SIZE - Footer.FOOT_SIZE) {
-                switchToRecovery();
+                switchToRecovery(in);
                 return;
             }
             workMode = MODE_BODY_PROCESSING;
             currentNeedReadableSize = header.getPayloadSize();
         } catch (PackageParseException e) {
-            switchToRecovery();
+            switchToRecovery(in);
         }
     }
 
     private void doBodyProcessing(ChannelHandlerContext ctx, ByteBuf in, List<Object> out) {
-        ByteBuf buf = readRecyclableFirst(in, currentNeedReadableSize);
+        ByteBuf buf = in.readBytes(currentNeedReadableSize);
         body = new Body(buf, header.getMessageCharset().getCharset());
         workMode = MODE_FOOTER_PROCESSING;
         currentNeedReadableSize = Footer.FOOT_SIZE;
     }
 
     private void doFooterProcessing(ChannelHandlerContext ctx, ByteBuf in, List<Object> out) {
-        ByteBuf buf = readRecyclableFirst(in, currentNeedReadableSize);
+        ByteBuf buf = in.readBytes(currentNeedReadableSize);
         if (Footer.checkFooter(buf)) {
             Package p = new Package(header, body, footer);
             out.add(p);
             workMode = MODE_HEADER_PROCESSING;
             currentNeedReadableSize = Header.HEADER_SIZE;
         } else {
-            if (recyclable.readableBytes() > 0) {
-            }
+            switchToRecovery(in);
         }
     }
 
-    /**
-     * 在回收数据和可读数据中读取字节。此方法会优先读取回收数据的字节。
-     *
-     * @param in   可读数据，如果回收数据字节不足够，则会在此ByteBuf中读取。
-     * @param size 要读取的字节数。
-     * @return 返回一个新创建的包含读取数据的ByteBuf对象。
-     */
-    private ByteBuf readRecyclableFirst(ByteBuf in, int size) {
-        return Unpooled.wrappedBuffer(readRecyclableFirst0(in, size));
-    }
-
-    /**
-     * 在回收数据和可读数据中读取字节。此方法会优先读取回收数据的字节。
-     *
-     * @param in   可读数据，如果回收数据字节不足够，则会在此ByteBuf中读取。
-     * @param size 要读取的字节数。
-     * @return 返回一个新创建的包含读取数据的byte数组。
-     */
-    private byte[] readRecyclableFirst0(ByteBuf in, int size) {
-        byte[] bytes = new byte[size];
-        int recyclableBytes = recyclable.readableBytes();
-        if (size < recyclableBytes) {
-            recyclable.readBytes(bytes);
-        } else if (size == recyclableBytes) {
-            recyclable.readBytes(bytes);
-            recyclable.clear();
+    private void doRecovery(ChannelHandlerContext ctx, ByteBuf in, List<Object> out) {
+        ByteBuf buf = in.readBytes(currentNeedReadableSize);
+        if (Footer.checkFooter(buf)) {
+            Package p = new Package(header, body, footer);
+            out.add(p);
+            workMode = MODE_HEADER_PROCESSING;
+            currentNeedReadableSize = Header.HEADER_SIZE;
         } else {
-            recyclable.readBytes(bytes, 0, recyclableBytes);
-            recyclable.clear();
-            in.readBytes(bytes, recyclableBytes, size - recyclableBytes);
+            switchToRecovery(in);
         }
-        return bytes;
     }
 
-    private void switchToRecovery() {
+    private void switchToRecovery(ByteBuf in) {
+        in.resetReaderIndex();
         workMode = MODE_RECOVERY;
         currentNeedReadableSize = 1;
     }

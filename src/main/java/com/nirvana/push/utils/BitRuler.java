@@ -2,6 +2,7 @@ package com.nirvana.push.utils;
 
 /**
  * bit量尺。
+ * Created by Nirvana on 2017/8/1.
  */
 public class BitRuler {
 

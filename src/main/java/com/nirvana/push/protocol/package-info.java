@@ -20,4 +20,5 @@ package com.nirvana.push.protocol;
 *
 * 0xff
 *
+* Created by Nirvana on 2017/8/1.
 * */

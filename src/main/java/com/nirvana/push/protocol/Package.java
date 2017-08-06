@@ -5,6 +5,7 @@ import io.netty.buffer.Unpooled;
 
 /**
  * 协议包。提供获取包信息操作。
+ * Created by Nirvana on 2017/8/2.
  */
 public class Package extends OutputableArray {
 

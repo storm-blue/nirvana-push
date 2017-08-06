@@ -2,6 +2,10 @@ package com.nirvana.push.core;
 
 import java.util.Collection;
 
+/**
+ * 绑定多个MessageHall的发布者。
+ * Created by Nirvana on 2017/8/3.
+ */
 public class AbstractMultiHallPublisher implements Publisher {
 
     private Collection<MessageHall> halls;

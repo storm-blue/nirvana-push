@@ -7,6 +7,7 @@ import java.io.OutputStream;
 
 /**
  * 输出器接口。
+ * Created by Nirvana on 2017/8/2.
  */
 public interface Outputter {
 

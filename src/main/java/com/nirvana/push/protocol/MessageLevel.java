@@ -4,6 +4,7 @@ import com.nirvana.push.utils.CodeEnumerator;
 
 /**
  * 消息等级。
+ * Created by Nirvana on 2017/8/2.
  */
 public enum MessageLevel {
 

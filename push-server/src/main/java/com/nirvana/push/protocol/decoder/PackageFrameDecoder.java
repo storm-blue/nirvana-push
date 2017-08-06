@@ -1,11 +1,11 @@
-package com.nirvana.push.server;
+package com.nirvana.push.protocol.decoder;
 
-import com.nirvana.push.protocol.*;
+import com.nirvana.push.protocol.Body;
+import com.nirvana.push.protocol.Footer;
+import com.nirvana.push.protocol.Header;
 import com.nirvana.push.protocol.Package;
 import com.nirvana.push.protocol.exception.PackageParseException;
 import io.netty.buffer.ByteBuf;
-import io.netty.buffer.CompositeByteBuf;
-import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.ByteToMessageDecoder;
 import org.slf4j.Logger;
@@ -28,6 +28,7 @@ public class PackageFrameDecoder extends ByteToMessageDecoder {
     /*单帧最大长度*/
     private int maxFrameSize = Package.MAX_LENGTH;
 
+    /*当前所需读取的最小字节数*/
     private int currentNeedReadableSize = Header.HEADER_SIZE;
 
     /**
@@ -87,29 +88,45 @@ public class PackageFrameDecoder extends ByteToMessageDecoder {
         }
     }
 
+    /**
+     * MODE_HEADER_PROCESSING模式。
+     * 读取Header，如果读取成功，进入body处理模式。否则进入恢复模式。
+     */
     private void doHeaderProcessing(ChannelHandlerContext ctx, ByteBuf in, List<Object> out) {
         in.markReaderIndex();
         ByteBuf buf = in.readBytes(currentNeedReadableSize);
         try {
             header = new Header(buf);
             if (header.getPayloadSize() > maxFrameSize - Header.HEADER_SIZE - Footer.FOOT_SIZE) {
-                switchToRecovery(in);
+                in.resetReaderIndex();
+                switchToRecovery();
                 return;
             }
             workMode = MODE_BODY_PROCESSING;
             currentNeedReadableSize = header.getPayloadSize();
+            LOGGER.debug("Header处理成功，进入MODE_BODY_PROCESSING模式。");
         } catch (PackageParseException e) {
-            switchToRecovery(in);
+            in.resetReaderIndex();
+            switchToRecovery();
         }
     }
 
+    /**
+     * MODE_BODY_PROCESSING模式.
+     * 读取Body，如果读取成功，进入MODE_FOOTER_PROCESSING工作模式。否则进入恢复模式。
+     */
     private void doBodyProcessing(ChannelHandlerContext ctx, ByteBuf in, List<Object> out) {
         ByteBuf buf = in.readBytes(currentNeedReadableSize);
         body = new Body(buf, header.getMessageCharset().getCharset());
         workMode = MODE_FOOTER_PROCESSING;
         currentNeedReadableSize = Footer.FOOT_SIZE;
+        LOGGER.debug("Body处理成功，进入MODE_FOOTER_PROCESSING模式。");
     }
 
+    /**
+     * MODE_FOOTER_PROCESSING模式.
+     * 读取Body，如果读取成功，输出Package，并重新进入MODE_HEADER_PROCESSING模式。否则进入恢复模式。
+     */
     private void doFooterProcessing(ChannelHandlerContext ctx, ByteBuf in, List<Object> out) {
         ByteBuf buf = in.readBytes(currentNeedReadableSize);
         if (Footer.checkFooter(buf)) {
@@ -117,26 +134,41 @@ public class PackageFrameDecoder extends ByteToMessageDecoder {
             out.add(p);
             workMode = MODE_HEADER_PROCESSING;
             currentNeedReadableSize = Header.HEADER_SIZE;
+            LOGGER.debug("帧解码成功，重新进入MODE_HEADER_PROCESSING模式。");
         } else {
-            switchToRecovery(in);
+            in.resetReaderIndex();
+            switchToRecovery();
         }
     }
 
+
+    private int recoveryFlag = 0;
+
+    /**
+     * 检测是否连续读到0xff,0xff分隔符。
+     * 如果读到分隔符，恢复完毕，进入MODE_HEADER_PROCESSING处理模式。
+     */
     private void doRecovery(ChannelHandlerContext ctx, ByteBuf in, List<Object> out) {
-        ByteBuf buf = in.readBytes(currentNeedReadableSize);
-        if (Footer.checkFooter(buf)) {
-            Package p = new Package(header, body, footer);
-            out.add(p);
-            workMode = MODE_HEADER_PROCESSING;
-            currentNeedReadableSize = Header.HEADER_SIZE;
-        } else {
-            switchToRecovery(in);
+        for (int i = 0; i < in.readableBytes(); i++) {
+            byte b = in.readByte();
+            if (b == (byte) 0xff) {
+                recoveryFlag++;
+            } else {
+                recoveryFlag = 0;
+            }
+            if (recoveryFlag == 2) {
+                workMode = MODE_HEADER_PROCESSING;
+                currentNeedReadableSize = Header.HEADER_SIZE;
+                LOGGER.debug("恢复成功，进入MODE_HEADER_PROCESSING模式。");
+                break;
+            }
         }
     }
 
-    private void switchToRecovery(ByteBuf in) {
-        in.resetReaderIndex();
+    //切换到恢复模式。
+    private void switchToRecovery() {
         workMode = MODE_RECOVERY;
         currentNeedReadableSize = 1;
+        LOGGER.debug("进入Recovery模式。");
     }
 }

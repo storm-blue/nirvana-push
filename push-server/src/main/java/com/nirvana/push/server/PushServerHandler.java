@@ -17,7 +17,7 @@ public class PushServerHandler extends SimpleChannelInboundHandler<Package> {
 
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, Package msg) throws Exception {
-        LOGGER.info("开始处理接收的协议包：{}", msg);
-        System.out.println(this);
+        //LOGGER.info("开始处理接收的协议包：{}", msg);
+        //System.out.println(this);
     }
 }

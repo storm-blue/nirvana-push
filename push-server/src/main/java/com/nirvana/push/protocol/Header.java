@@ -5,8 +5,6 @@ import com.nirvana.push.utils.BitRuler;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 
-import java.util.Arrays;
-
 /**
  * 协议包头。
  * Created by Nirvana on 2017/8/2.

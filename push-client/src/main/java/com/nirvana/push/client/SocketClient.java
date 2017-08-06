@@ -12,10 +12,7 @@ public class SocketClient {
     public static void main(String[] args) throws IOException {
 
         IThread thread = new IThread();
-
-        for (int i = 0; i < 10; i++) {
-            new Thread(thread).start();
-        }
+        new Thread(thread).start();
 
     }
 
@@ -29,6 +26,10 @@ public class SocketClient {
                 for (int i = 0; i < 10; i++) {
                     Package p = new Package(MessageType.PAYLOAD, "我是一只大老虎！我的编号是：" + i);
                     p.output(outputStream);
+                    outputStream.write(1231232);
+                    outputStream.write(12352);
+                    outputStream.write(12322);
+                    outputStream.write(12366612);
                 }
                 outputStream.close();
                 socket.close();

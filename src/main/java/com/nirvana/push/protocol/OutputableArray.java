@@ -16,7 +16,7 @@ import java.util.List;
  *
  * @author Nirvana
  */
-public abstract class AbstractOutputableArray extends AbstactOutputable {
+public class OutputableArray extends AbstactOutputable {
 
     private List<Outputable> elements = new ArrayList<>();
 
@@ -25,16 +25,16 @@ public abstract class AbstractOutputableArray extends AbstactOutputable {
      */
     private CompositeByteBuf byteBuf = Unpooled.compositeBuffer();
 
-    public AbstractOutputableArray() {
+    public OutputableArray() {
     }
 
-    public AbstractOutputableArray(Outputable... outputables) {
+    public OutputableArray(Outputable... outputables) {
         for (Outputable outputable : outputables) {
             addElement(outputable);
         }
     }
 
-    public AbstractOutputableArray(Collection<Outputable> outputables) {
+    public OutputableArray(Collection<Outputable> outputables) {
         for (Outputable outputable : outputables) {
             addElement(outputable);
         }

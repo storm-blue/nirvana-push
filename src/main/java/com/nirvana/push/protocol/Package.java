@@ -6,17 +6,32 @@ import io.netty.buffer.Unpooled;
 /**
  * 协议包。提供获取包信息操作。
  */
-public class Package extends AbstractOutputableArray {
+public class Package extends OutputableArray {
+
+    /**
+     * 包最大长度。
+     */
+    public static int MAX_LENGTH = 65535 + Header.HEADER_SIZE + Footer.FOOT_SIZE;
 
     private Header header;
 
     private Body body;
 
-    private Footer footer = Footer.getFooter();
+    private Footer footer;
 
     public Package(ByteBuf byteBuf) {
         header = new Header(byteBuf.slice(0, Header.HEADER_SIZE));
-        body = new Body(byteBuf.slice(Header.HEADER_SIZE, header.getPackageLength()), header.getMessageCharset().getCharset());
+        body = new Body(byteBuf.slice(Header.HEADER_SIZE, header.getPayloadSize()), header.getMessageCharset().getCharset());
+        footer = Footer.getFooter();
+        addElement(header);
+        addElement(body);
+        addElement(footer);
+    }
+
+    public Package(Header header, Body body, Footer footer) {
+        this.header = header;
+        this.body = body;
+        this.footer = footer;
         addElement(header);
         addElement(body);
         addElement(footer);
@@ -41,6 +56,7 @@ public class Package extends AbstractOutputableArray {
     public Package(MessageType type, MessageLevel level, MessageCharset charset, String content) {
         body = new Body(content, charset.getCharset());
         header = new Header(type, level, charset, body.getSize());
+        footer = Footer.getFooter();
         addElement(header);
         addElement(body);
         addElement(footer);
@@ -55,7 +71,7 @@ public class Package extends AbstractOutputableArray {
     }
 
     public int contentSize() {
-        return header.getPackageLength();
+        return header.getPayloadSize();
     }
 
     public Header getHeader() {

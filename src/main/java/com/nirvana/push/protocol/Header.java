@@ -1,5 +1,6 @@
 package com.nirvana.push.protocol;
 
+import com.nirvana.push.protocol.exception.HeaderParseException;
 import com.nirvana.push.utils.BitRuler;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
@@ -19,28 +20,28 @@ public class Header extends AbstactOutputable {
 
     private MessageCharset messageCharset;
 
-    private int packageLength = 0;
+    private int payloadSize = 0;
 
     private ByteBuf buf;
 
     public Header(ByteBuf byteBuf) {
         if (HEADER_SIZE > byteBuf.readableBytes()) {
-            throw new IllegalArgumentException("package header must be 3 bytes");
+            throw new HeaderParseException("package header must be 3 bytes");
         }
         int headerInt = byteBuf.getMedium(0);
         messageType = MessageType.get(BitRuler.r(headerInt, 22, 24));
         if (messageType == null) {
-            throw new IllegalArgumentException("Wrong message type.");
+            throw new HeaderParseException("Wrong message type.");
         }
         messageLevel = MessageLevel.get(BitRuler.r(headerInt, 20, 21));
         if (messageLevel == null) {
-            throw new IllegalArgumentException("Wrong message level.");
+            throw new HeaderParseException("Wrong message level.");
         }
         messageCharset = MessageCharset.get(BitRuler.r(headerInt, 17, 19));
         if (messageCharset == null) {
-            throw new IllegalArgumentException("Wrong message charset.");
+            throw new HeaderParseException("Wrong message charset.");
         }
-        packageLength = BitRuler.r(headerInt, 1, 16);
+        payloadSize = BitRuler.r(headerInt, 1, 16);
         buf = byteBuf;
     }
 
@@ -56,7 +57,7 @@ public class Header extends AbstactOutputable {
         this.messageType = type;
         this.messageLevel = level;
         this.messageCharset = charset;
-        this.packageLength = length;
+        this.payloadSize = length;
         byte b1 = (byte) ((type.getCode() << 5) | (level.getCode() << 3) | charset.getCode());
         byte b2 = (byte) BitRuler.r(length, 9, 16);
         byte b3 = (byte) BitRuler.r(length, 1, 8);
@@ -75,8 +76,8 @@ public class Header extends AbstactOutputable {
         return messageCharset;
     }
 
-    public int getPackageLength() {
-        return packageLength;
+    public int getPayloadSize() {
+        return payloadSize;
     }
 
     @Override
@@ -90,7 +91,7 @@ public class Header extends AbstactOutputable {
                 "messageType=" + messageType +
                 ", messageLevel=" + messageLevel +
                 ", messageCharset=" + messageCharset +
-                ", packageLength=" + packageLength +
+                ", payloadSize=" + payloadSize +
                 '}';
     }
 }

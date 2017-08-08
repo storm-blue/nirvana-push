@@ -1,6 +1,12 @@
 package com.nirvana.push.core.user;
 
-public interface Agent{
+import com.nirvana.push.protocol.Package;
+
+/**
+ * 客户端在此服务器的代理。一个Agent负责接收客户的指令，执行指令。
+ * Created by Nirvana on 2017/8/7.
+ */
+public interface Agent {
 
     void onRequest(Package pkg);
 

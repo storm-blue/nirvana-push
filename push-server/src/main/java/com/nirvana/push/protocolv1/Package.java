@@ -1,5 +1,7 @@
-package com.nirvana.push.protocol;
+package com.nirvana.push.protocolv1;
 
+import com.nirvana.push.protocol.OutputableArray;
+import com.nirvana.push.protocol.PackageLevel;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 
@@ -43,18 +45,18 @@ public class Package extends OutputableArray {
     }
 
     public Package(MessageType type, String content) {
-        this(type, MessageLevel.NO_CONFIRM, MessageCharset.UTF8, content);
+        this(type, PackageLevel.NO_CONFIRM, MessageCharset.UTF8, content);
     }
 
     public Package(MessageType type, MessageCharset charset, String content) {
-        this(type, MessageLevel.NO_CONFIRM, charset, content);
+        this(type, PackageLevel.NO_CONFIRM, charset, content);
     }
 
-    public Package(MessageType type, MessageLevel level, String content) {
+    public Package(MessageType type, PackageLevel level, String content) {
         this(type, level, MessageCharset.UTF8, content);
     }
 
-    public Package(MessageType type, MessageLevel level, MessageCharset charset, String content) {
+    public Package(MessageType type, PackageLevel level, MessageCharset charset, String content) {
         body = new Body(content, charset.getCharset());
         header = new Header(type, level, charset, body.getSize());
         footer = Footer.getFooter();

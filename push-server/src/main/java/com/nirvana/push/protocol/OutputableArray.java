@@ -3,7 +3,6 @@ package com.nirvana.push.protocol;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.CompositeByteBuf;
 import io.netty.buffer.Unpooled;
-import io.netty.channel.ChannelHandlerContext;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -13,7 +12,7 @@ import java.util.List;
  * 可输出数组类。使用<code>CompositeByteBuf</code>的特性来组合子元素，提供输出服务。
  * Created by Nirvana on 2017/8/2.
  */
-public class OutputableArray extends AbstactOutputable {
+public class OutputableArray extends AbstractOutputable {
 
     private List<Outputable> elements = new ArrayList<>();
 

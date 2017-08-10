@@ -1,5 +1,6 @@
-package com.nirvana.push.protocol;
+package com.nirvana.push.protocolv1;
 
+import com.nirvana.push.protocol.AbstractOutputable;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 
@@ -7,7 +8,7 @@ import io.netty.buffer.Unpooled;
  * 包尾。
  * Created by Nirvana on 2017/8/2.
  */
-public class Footer extends AbstactOutputable {
+public class Footer extends AbstractOutputable {
 
     private static final Footer footer = new Footer();
 

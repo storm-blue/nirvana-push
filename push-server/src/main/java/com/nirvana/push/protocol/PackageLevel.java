@@ -6,20 +6,20 @@ import com.nirvana.push.utils.CodeEnumerator;
  * 消息等级。
  * Created by Nirvana on 2017/8/2.
  */
-public enum MessageLevel {
+public enum PackageLevel {
 
     /*不会确认*/
-    NO_CONFIRM(0x00),
+    NO_CONFIRM(0x01),
 
     /*至少一次*/
-    AT_LEAST_ONCE(0x01),
+    AT_LEAST_ONCE(0x02),
 
     /*有且仅一次*/
-    EXACTLY_ONCE(0x02);
+    EXACTLY_ONCE(0x03);
 
     private int code;
 
-    MessageLevel(int code) {
+    PackageLevel(int code) {
         this.code = code;
     }
 
@@ -27,9 +27,9 @@ public enum MessageLevel {
         return code;
     }
 
-    private static final CodeEnumerator<MessageLevel> enumerator = new CodeEnumerator<>(MessageLevel.class);
+    private static final CodeEnumerator<PackageLevel> enumerator = new CodeEnumerator<>(PackageLevel.class);
 
-    public static MessageLevel get(int code) {
+    public static PackageLevel get(int code) {
         return enumerator.get(code);
     }
 

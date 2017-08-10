@@ -1,10 +1,10 @@
-package com.nirvana.push.protocol.decoder;
+package com.nirvana.push.protocolv1.decoder;
 
-import com.nirvana.push.protocol.Body;
-import com.nirvana.push.protocol.Footer;
-import com.nirvana.push.protocol.Header;
-import com.nirvana.push.protocol.Package;
-import com.nirvana.push.protocol.exception.PackageParseException;
+import com.nirvana.push.protocolv1.Body;
+import com.nirvana.push.protocolv1.Footer;
+import com.nirvana.push.protocolv1.Header;
+import com.nirvana.push.protocolv1.Package;
+import com.nirvana.push.protocol.exception.ProtocolException;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.ByteToMessageDecoder;
@@ -105,7 +105,7 @@ public class PackageFrameDecoder extends ByteToMessageDecoder {
             workMode = MODE_BODY_PROCESSING;
             currentNeedReadableSize = header.getPayloadSize();
             LOGGER.debug("Header处理成功，进入MODE_BODY_PROCESSING模式。");
-        } catch (PackageParseException e) {
+        } catch (ProtocolException e) {
             in.resetReaderIndex();
             switchToRecovery();
         }

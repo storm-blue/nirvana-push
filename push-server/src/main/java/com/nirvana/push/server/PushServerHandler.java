@@ -1,6 +1,6 @@
 package com.nirvana.push.server;
 
-import com.nirvana.push.protocol.Package;
+import com.nirvana.push.protocolv1.Package;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;

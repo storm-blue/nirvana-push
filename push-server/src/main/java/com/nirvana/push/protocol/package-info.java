@@ -3,8 +3,6 @@ package com.nirvana.push.protocol;
 /*
 * 协议包。
 *
-* A. header:3byte
-*
 * +———————————————+
 * |1 2 3 4 5 6 7 8|
 * |———————————————|

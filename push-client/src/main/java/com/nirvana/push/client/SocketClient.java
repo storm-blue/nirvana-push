@@ -1,7 +1,7 @@
 package com.nirvana.push.client;
 
-import com.nirvana.push.protocol.MessageType;
-import com.nirvana.push.protocol.Package;
+import com.nirvana.push.protocolv1.MessageType;
+import com.nirvana.push.protocolv1.Package;
 
 import java.io.IOException;
 import java.io.OutputStream;

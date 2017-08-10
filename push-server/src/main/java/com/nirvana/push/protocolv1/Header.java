@@ -1,6 +1,8 @@
-package com.nirvana.push.protocol;
+package com.nirvana.push.protocolv1;
 
+import com.nirvana.push.protocol.AbstractOutputable;
 import com.nirvana.push.protocol.exception.HeaderParseException;
+import com.nirvana.push.protocol.PackageLevel;
 import com.nirvana.push.utils.BitRuler;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
@@ -9,13 +11,13 @@ import io.netty.buffer.Unpooled;
  * 协议包头。
  * Created by Nirvana on 2017/8/2.
  */
-public class Header extends AbstactOutputable {
+public class Header extends AbstractOutputable {
 
     public static final int HEADER_SIZE = 3;
 
     private MessageType messageType;
 
-    private MessageLevel messageLevel;
+    private PackageLevel packageLevel;
 
     private MessageCharset messageCharset;
 
@@ -32,8 +34,8 @@ public class Header extends AbstactOutputable {
         if (messageType == null) {
             throw new HeaderParseException("Wrong message type.");
         }
-        messageLevel = MessageLevel.get(BitRuler.r(headerInt, 20, 21));
-        if (messageLevel == null) {
+        packageLevel = PackageLevel.get(BitRuler.r(headerInt, 20, 21));
+        if (packageLevel == null) {
             throw new HeaderParseException("Wrong message level.");
         }
         messageCharset = MessageCharset.get(BitRuler.r(headerInt, 17, 19));
@@ -52,9 +54,9 @@ public class Header extends AbstactOutputable {
         this(Unpooled.wrappedBuffer(bytes, index, HEADER_SIZE));
     }
 
-    public Header(MessageType type, MessageLevel level, MessageCharset charset, int length) {
+    public Header(MessageType type, PackageLevel level, MessageCharset charset, int length) {
         this.messageType = type;
-        this.messageLevel = level;
+        this.packageLevel = level;
         this.messageCharset = charset;
         this.payloadSize = length;
         byte b1 = (byte) ((type.getCode() << 5) | (level.getCode() << 3) | charset.getCode());
@@ -67,8 +69,8 @@ public class Header extends AbstactOutputable {
         return messageType;
     }
 
-    public MessageLevel getMessageLevel() {
-        return messageLevel;
+    public PackageLevel getPackageLevel() {
+        return packageLevel;
     }
 
     public MessageCharset getMessageCharset() {
@@ -88,7 +90,7 @@ public class Header extends AbstactOutputable {
     public String toString() {
         return "Header{" +
                 "messageType=" + messageType +
-                ", messageLevel=" + messageLevel +
+                ", packageLevel=" + packageLevel +
                 ", messageCharset=" + messageCharset +
                 ", payloadSize=" + payloadSize +
                 '}';

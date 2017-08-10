@@ -1,6 +1,6 @@
 package com.nirvana.push.server;
 
-import com.nirvana.push.protocol.decoder.PackageFrameDecoder;
+import com.nirvana.push.protocolv1.decoder.PackageFrameDecoder;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelPipeline;
 import io.netty.channel.socket.SocketChannel;

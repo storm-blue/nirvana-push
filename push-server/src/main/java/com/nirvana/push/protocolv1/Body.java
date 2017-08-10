@@ -1,5 +1,6 @@
-package com.nirvana.push.protocol;
+package com.nirvana.push.protocolv1;
 
+import com.nirvana.push.protocol.AbstractOutputable;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 
@@ -9,7 +10,7 @@ import java.nio.charset.Charset;
  * 包体。
  * Created by Nirvana on 2017/8/2.
  */
-public class Body extends AbstactOutputable {
+public class Body extends AbstractOutputable {
 
     private String content;
 

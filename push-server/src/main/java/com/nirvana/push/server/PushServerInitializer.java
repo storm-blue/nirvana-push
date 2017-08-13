@@ -1,6 +1,6 @@
 package com.nirvana.push.server;
 
-import com.nirvana.push.protocolv1.decoder.PackageFrameDecoder;
+import com.nirvana.push.protocol.decoder.PackageFrameDecoder;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelPipeline;
 import io.netty.channel.socket.SocketChannel;
@@ -15,7 +15,7 @@ public class PushServerInitializer extends ChannelInitializer<SocketChannel> {
     protected void initChannel(SocketChannel ch) throws Exception {
         ChannelPipeline pipeline = ch.pipeline();
 
-        // 以("\n")为结尾分割的 解码器
+        // 解码器
         pipeline.addLast("framer", new PackageFrameDecoder());
 
         // 字符串解码 和 编码

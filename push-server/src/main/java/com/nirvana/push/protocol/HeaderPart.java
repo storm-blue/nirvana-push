@@ -6,11 +6,12 @@ import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 
 /**
- * com.nirvana.push.protocol.BaseHeader.java.
- * <p>
+ * 基本消息头。
  * Created by Nirvana on 2017/8/9.
  */
-public class HeaderPart implements Outputable {
+public class HeaderPart extends AbstractOutputable {
+
+    public static final int HEADER_PART_SIZE = 1;
 
     private ByteBuf data;
 
@@ -24,7 +25,7 @@ public class HeaderPart implements Outputable {
     private boolean retain;
 
     //是否有序
-    private boolean sequential;
+    private boolean identifiable;
 
     public HeaderPart(byte b) {
         this(new byte[]{b});
@@ -38,23 +39,33 @@ public class HeaderPart implements Outputable {
         if (buf == null) {
             throw new HeaderParseException("参数不能为空");
         }
-        if (buf.readableBytes() != 1) {
+        if (buf.readableBytes() != HEADER_PART_SIZE) {
             throw new HeaderParseException("消息头部分长度必须为1");
         }
         this.data = buf;
         byte b = buf.getByte(0);
+
         packageType = PackageType.get(BitRuler.r(b, 5, 8));
-        sequential = BitRuler.r(b, 4, 4) == 1;
+        if (packageType == null) {
+            throw new HeaderParseException("包类型解析错误");
+        }
+
+        identifiable = BitRuler.r(b, 4, 4) == 1;
+
         packageLevel = PackageLevel.get(BitRuler.r(b, 2, 3));
+        if (packageLevel == null) {
+            throw new HeaderParseException("包传输等级解析错误");
+        }
+
         retain = BitRuler.r(b, 1, 1) == 1;
     }
 
-    public HeaderPart(PackageType type, PackageLevel level, boolean sequential, boolean retain) {
-        byte b = (byte) (type.getCode() << 4 | (sequential ? 1 : 0) << 3 | (level.getCode() << 1) | (retain ? 1 : 0));
+    public HeaderPart(PackageType type, PackageLevel level, boolean identifiable, boolean retain) {
+        byte b = (byte) (type.getCode() << 4 | (identifiable ? 1 : 0) << 3 | (level.getCode() << 1) | (retain ? 1 : 0));
         data = Unpooled.wrappedBuffer(new byte[]{b});
         this.packageType = type;
         this.packageLevel = level;
-        this.sequential = sequential;
+        this.identifiable = identifiable;
         this.retain = retain;
     }
 
@@ -70,8 +81,8 @@ public class HeaderPart implements Outputable {
         return retain;
     }
 
-    public boolean isSequential() {
-        return sequential;
+    public boolean isIdentifiable() {
+        return identifiable;
     }
 
     @Override
@@ -85,7 +96,7 @@ public class HeaderPart implements Outputable {
                 "packageType=" + packageType +
                 ", packageLevel=" + packageLevel +
                 ", retain=" + retain +
-                ", sequential=" + sequential +
+                ", identifiable=" + identifiable +
                 '}';
     }
 }

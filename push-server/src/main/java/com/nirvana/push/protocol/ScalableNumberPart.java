@@ -13,27 +13,39 @@ import io.netty.buffer.Unpooled;
 public class ScalableNumberPart extends AbstractOutputable {
 
     //最大字节数
-    public static final int MAX_BYTES = 8;
+    public static final int LONG_INT_MAX_BYTES = 8;
 
     //可编码的最大值
-    public static final long MAX_VALUE = 72057594037927935L;
+    public static final long[] MAX_VALUES = {127L, 16383L, 2097151L, 268435455L, 34359738367L, 4398046511103L, 562949953421311L, 72057594037927935L};
 
     /*可变字节的值*/
     private long value = 0;
 
     private ByteBuf buf;
 
+    private int maxBytes = LONG_INT_MAX_BYTES;
+
     /**
      * @param number 要编码的数值。
      */
     public ScalableNumberPart(long number) {
+        this(number, LONG_INT_MAX_BYTES);
+    }
 
-        if (number > MAX_VALUE) {
-            throw new ScalableNumCreateException("编码数值必须小于：" + MAX_VALUE);
+    /**
+     * @param number   要编码的数值。
+     * @param maxBytes 最大字节数
+     */
+    public ScalableNumberPart(long number, int maxBytes) {
+
+        this.maxBytes = maxBytes;
+
+        if (number > MAX_VALUES[maxBytes - 1]) {
+            throw new ScalableNumCreateException("编码数值必须小于：" + MAX_VALUES[maxBytes - 1]);
         }
         value = number;
 
-        byte[] bytes = new byte[MAX_BYTES];
+        byte[] bytes = new byte[maxBytes];
         int i = 0;
         while (number > 0) {
             bytes[i] = (byte) (number % 128);
@@ -48,8 +60,9 @@ public class ScalableNumberPart extends AbstractOutputable {
         creationFinished = true;
     }
 
-    private ScalableNumberPart() {
-        bytes = new byte[MAX_BYTES];
+    private ScalableNumberPart(int maxBytes) {
+        bytes = new byte[LONG_INT_MAX_BYTES];
+        this.maxBytes = maxBytes;
     }
 
     /*创建工作是否完成。*/
@@ -59,8 +72,8 @@ public class ScalableNumberPart extends AbstractOutputable {
     private int index = 0;
     private byte[] bytes;
 
-    public static ScalableNumberPart startCreation() {
-        return new ScalableNumberPart();
+    public static ScalableNumberPart startCreation(int maxBytes) {
+        return new ScalableNumberPart(maxBytes);
     }
 
     /**
@@ -71,6 +84,9 @@ public class ScalableNumberPart extends AbstractOutputable {
     public boolean append(byte b) {
         if (creationFinished) {
             throw new ScalableNumCreateException("此RemainLengthPart已经创建完成，无法添加新的字节。");
+        }
+        if (index >= maxBytes) {
+            throw new ScalableNumCreateException("超过了最大限制字节长度：" + maxBytes);
         }
         bytes[index] = b;
         index++;
@@ -104,8 +120,18 @@ public class ScalableNumberPart extends AbstractOutputable {
     @Override
     public ByteBuf getByteBuf() {
         if (!creationFinished) {
-            throw new ScalableNumStateException("此变长字节对象尚未创建完成");
+            throw new ScalableNumStateException("此变长字节对象尚未创建完成。");
         }
         return buf;
+    }
+
+    @Override
+    public String toString() {
+        return "ScalableNumberPart{" +
+                "value=" + value +
+                ", maxBytes=" + maxBytes +
+                ", creationFinished=" + creationFinished +
+                ", index=" + index +
+                '}';
     }
 }

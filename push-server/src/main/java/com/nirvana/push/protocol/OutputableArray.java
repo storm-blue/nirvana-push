@@ -40,8 +40,19 @@ public class OutputableArray extends AbstractOutputable {
      * 增加组件。
      */
     protected void addElement(Outputable element) {
-        elements.add(element);
-        byteBuf.addComponent(true, element.getByteBuf());
+        if (element != null) {
+            elements.add(element);
+            byteBuf.addComponent(true, element.getByteBuf());
+        }
+    }
+
+    /**
+     * 增加组件。
+     */
+    protected void addElements(Outputable... elements) {
+        for (Outputable element : elements) {
+            addElement(element);
+        }
     }
 
     /**

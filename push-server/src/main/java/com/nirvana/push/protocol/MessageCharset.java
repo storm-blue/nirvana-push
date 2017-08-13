@@ -1,4 +1,4 @@
-package com.nirvana.push.protocolv1;
+package com.nirvana.push.protocol;
 
 import com.nirvana.push.utils.CodeEnumerator;
 

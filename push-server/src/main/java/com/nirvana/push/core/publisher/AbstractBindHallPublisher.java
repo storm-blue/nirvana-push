@@ -1,4 +1,6 @@
-package com.nirvana.push.core;
+package com.nirvana.push.core.publisher;
+
+import com.nirvana.push.core.broker.MessageHall;
 
 import java.util.Collection;
 
@@ -6,17 +8,24 @@ import java.util.Collection;
  * 绑定单个MessageHall的发布者。
  * Created by Nirvana on 2017/8/3.
  */
-public abstract class AbstractBindHallPublisher implements Publisher {
+public abstract class AbstractBindHallPublisher<T> implements Publisher<T> {
 
     private MessageHall hall;
 
+    public AbstractBindHallPublisher() {
+    }
+
+    public AbstractBindHallPublisher(MessageHall hall) {
+        this.hall = hall;
+    }
+
     @Override
-    public void publish(Message message) {
+    public void publish(T message) {
         hall.putMessage(message);
     }
 
     @Override
-    public void publish(Collection<Message> message) {
+    public void publish(Collection<T> message) {
         hall.putMessage(message);
     }
 

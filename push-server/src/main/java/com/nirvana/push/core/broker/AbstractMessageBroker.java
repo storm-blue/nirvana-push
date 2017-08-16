@@ -1,4 +1,6 @@
-package com.nirvana.push.core;
+package com.nirvana.push.core.broker;
+
+import com.nirvana.push.core.subscriber.Subscriber;
 
 import java.util.Collection;
 import java.util.HashSet;
@@ -21,14 +23,15 @@ public abstract class AbstractMessageBroker implements MessageHall {
         return subscribers;
     }
 
-    protected void handle(Message message) {
+    @SuppressWarnings("unchecked")
+    protected void handle(Object message) {
         for (Subscriber subscriber : subscribers) {
             subscriber.onMessage(message);
         }
     }
 
-    protected void handle(Collection<Message> messages) {
-        for (Message message : messages) {
+    protected void handle(Collection<Object> messages) {
+        for (Object message : messages) {
             handle(message);
         }
     }

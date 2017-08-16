@@ -1,4 +1,4 @@
-package com.nirvana.push.core.agent;
+package com.nirvana.push.server.agent;
 
 import com.nirvana.push.protocol.BasePackage;
 

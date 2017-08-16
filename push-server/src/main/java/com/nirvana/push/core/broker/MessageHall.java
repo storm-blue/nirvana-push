@@ -1,4 +1,4 @@
-package com.nirvana.push.core;
+package com.nirvana.push.core.broker;
 
 import java.util.Collection;
 
@@ -8,8 +8,8 @@ import java.util.Collection;
  */
 public interface MessageHall {
 
-    void putMessage(Message message);
+    void putMessage(Object message);
 
-    void putMessage(Collection<Message> messages);
+    void putMessage(Collection<Object> messages);
 
 }

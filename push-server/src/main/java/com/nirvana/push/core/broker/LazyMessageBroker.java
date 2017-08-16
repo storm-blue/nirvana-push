@@ -1,4 +1,4 @@
-package com.nirvana.push.core;
+package com.nirvana.push.core.broker;
 
 import java.util.Collection;
 
@@ -12,17 +12,17 @@ public class LazyMessageBroker extends AbstractMessageBroker {
     private Topic topic;
 
     @Override
-    public void putMessage(Message msg) {
+    public void putMessage(Object msg) {
         topic.putMessage(msg);
     }
 
     @Override
-    public void putMessage(Collection<Message> messages) {
+    public void putMessage(Collection<Object> messages) {
         topic.putMessage(messages);
     }
 
     public void work() {
-        Collection<Message> messages = topic.consumeAll();
+        Collection<Object> messages = topic.consumeAll();
         handle(messages);
     }
 

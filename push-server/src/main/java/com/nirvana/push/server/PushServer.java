@@ -1,15 +1,18 @@
 package com.nirvana.push.server;
 
+import com.nirvana.push.core.broker.AbstractMessageBroker;
+import com.nirvana.push.core.broker.AutoMessageBroker;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
-import io.netty.channel.socket.nio.NioServerSocketChannel;
 
 /**
  * Created by Nirvana on 2017/8/1.
  */
 public class PushServer {
+
+    public static final AbstractMessageBroker PUBLIC_MESSAGE_BROKER = new AutoMessageBroker();
 
     private static final int port = 32222;
 
@@ -19,7 +22,7 @@ public class PushServer {
         try {
             ServerBootstrap b = new ServerBootstrap();
             b.group(bossGroup, workerGroup);
-            b.channel(NioServerSocketChannel.class);
+            b.channel(AgentNioServerSocketChannel.class);
             b.childHandler(new PushServerInitializer());
 
             // 服务器绑定端口监听

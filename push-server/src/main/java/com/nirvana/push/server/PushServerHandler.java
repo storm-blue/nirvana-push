@@ -1,6 +1,7 @@
 package com.nirvana.push.server;
 
 import com.nirvana.push.protocol.BasePackage;
+import com.nirvana.push.server.agent.Agent;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
@@ -18,5 +19,7 @@ public class PushServerHandler extends SimpleChannelInboundHandler<BasePackage> 
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, BasePackage msg) throws Exception {
         LOGGER.info("开始处理接收的协议包：{}", msg);
+        Agent agent = ((AgentNioSocketChannel) ctx.channel()).getAgent();
+        agent.onAccept(msg);
     }
 }

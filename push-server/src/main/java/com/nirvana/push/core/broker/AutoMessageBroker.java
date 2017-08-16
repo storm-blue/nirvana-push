@@ -1,4 +1,4 @@
-package com.nirvana.push.core;
+package com.nirvana.push.core.broker;
 
 import java.util.Collection;
 
@@ -9,12 +9,12 @@ import java.util.Collection;
 public class AutoMessageBroker extends AbstractMessageBroker {
 
     @Override
-    public void putMessage(Message msg) {
+    public void putMessage(Object msg) {
         handle(msg);
     }
 
     @Override
-    public void putMessage(Collection<Message> messages) {
+    public void putMessage(Collection<Object> messages) {
         handle(messages);
     }
 }

@@ -37,19 +37,19 @@ public enum PackageType {
     UNSUBSCRIBE_ACK(0x09),
 
     /*发布*/
-    PUBLISH(0x10),
+    PUBLISH(0x0A),
 
     /*发布确认*/
-    PUBLISH_ACK(0x11),
+    PUBLISH_ACK(0x0B),
 
     /*心跳*/
-    PING(0x12),
+    PING(0x0C),
 
     /*心跳确认*/
-    PING_ACK(0x13),
+    PING_ACK(0x0D),
 
     /*断开连接*/
-    DISCONNECT(0x14);
+    DISCONNECT(0x0E);
 
     private int code;
 

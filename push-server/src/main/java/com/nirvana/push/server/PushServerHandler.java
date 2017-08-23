@@ -34,19 +34,9 @@ public class PushServerHandler extends SimpleChannelInboundHandler<BasePackage> 
     @Override
     public void userEventTriggered(ChannelHandlerContext ctx, Object evt) throws Exception {
         if (evt instanceof IdleStateEvent) {
-            IdleStateEvent e = (IdleStateEvent) evt;
-            if (e.state() == IdleState.READER_IDLE) {
-                //读取超时 TODO 正常应该向客户端写入一个包，告知channel将要被关闭，随后关闭该channel
-                BasePackage basePackage = null;
-                ChannelFuture writeAndFlush = ctx.writeAndFlush(basePackage);
-                writeAndFlush.addListener((ChannelFutureListener) future -> ctx.channel().close());
+            //直接关闭channel
+            ctx.channel().close();
 
-            } else if (e.state() == IdleState.WRITER_IDLE) {
-                //写超时 TODO
-
-            } else if (e.state() == IdleState.ALL_IDLE) {
-                //所有超时 TODO
-            }
         }
     }
 }

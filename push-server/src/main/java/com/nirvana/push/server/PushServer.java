@@ -58,7 +58,7 @@ public class PushServer {
                 // 字符串解码 和 编码
                 pipeline.addLast("encoder", new StringEncoder());
                 // 自己的逻辑Handler
-                pipeline.addLast(busyGroup, "handler", new PushServerHandler());
+                pipeline.addLast(busyGroup, "handler", new PushServerHandlerX());
             }
         });
 
@@ -87,7 +87,7 @@ public class PushServer {
 
 
     public PushServer(int port) {
-        this(port, 60, 60, 120);
+        this(port, 60000, 60000, 120000);
     }
 
 

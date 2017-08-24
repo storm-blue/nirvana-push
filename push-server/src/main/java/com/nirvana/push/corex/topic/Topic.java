@@ -5,6 +5,13 @@ import com.nirvana.push.corex.subscriber.Subscriber;
 
 import java.util.Vector;
 
+/**
+ * topic的简单实现,使用观察者模式
+ *
+ * @author zc
+ * @version 1.0
+ * @date 2017-8-21
+ */
 public class Topic implements ITopic {
 
     private Vector<Subscriber> subs;
@@ -15,9 +22,11 @@ public class Topic implements ITopic {
 
     private Long token;
 
-    public Topic(Publisher publisher) {
+    public Topic(Publisher publisher,String name) {
         this.publisher = publisher;
+        this.name = name;
         subs = new Vector<>();
+
     }
 
     @Override
@@ -37,6 +46,11 @@ public class Topic implements ITopic {
 
     @Override
     public void onMessage(Object msg) {
+
+        for(Subscriber s:subs){
+
+            s.onMessage(msg);
+        }
 
     }
 

@@ -1,20 +1,18 @@
 package com.nirvana.push.corex.session;
 
-import com.nirvana.push.corex.publisher.Publisher;
-import com.nirvana.push.corex.subscriber.Subscriber;
+import io.netty.buffer.Unpooled;
 import io.netty.channel.Channel;
 import io.netty.util.AttributeKey;
-
-import java.util.Vector;
+import io.netty.util.CharsetUtil;
 
 /**
- *  NioSocketchannelSession实现
+ * NioSocketchannelSession实现
  *
  * @author zc
  * @version 1.0
  * @date 2017-8-21
  */
-public class NioSocketChannelSession implements Session,Subscriber,Publisher {
+public class NioSocketChannelSession implements Session {
 
     public NioSocketChannelSession(Channel channel) {
         this.channel = channel;
@@ -24,7 +22,7 @@ public class NioSocketChannelSession implements Session,Subscriber,Publisher {
     /**
      * 绑定对象key
      */
-    public static AttributeKey<Object> ATTACHMENT_KEY  = AttributeKey.valueOf("ATTACHMENT_KEY");
+    public static AttributeKey<Client> ATTACHMENT_KEY = AttributeKey.valueOf("client");
 
     /**
      * 实际会话对象
@@ -34,17 +32,17 @@ public class NioSocketChannelSession implements Session,Subscriber,Publisher {
     private Long sessionId;
 
     @Override
-    public Object getAttachment() {
+    public Client getClient() {
         return channel.attr(ATTACHMENT_KEY).get();
     }
 
     @Override
-    public void setAttachment(Object attachment) {
+    public void bindClient(Client attachment) {
         channel.attr(ATTACHMENT_KEY).set(attachment);
     }
 
     @Override
-    public void removeAttachment() {
+    public void removeClient() {
         channel.attr(ATTACHMENT_KEY).remove();
     }
 
@@ -65,7 +63,10 @@ public class NioSocketChannelSession implements Session,Subscriber,Publisher {
 
     @Override
     public void onMessage(Object message) {
+        System.out.println("是否活跃 >" + channel.isActive());
+        System.out.println("是否可写 >" + channel.isWritable());
 
+        channel.writeAndFlush(Unpooled.copiedBuffer((String) message, CharsetUtil.UTF_8)).addListener(future -> System.out.println("成功写入消息 >> " + message));
     }
 
 

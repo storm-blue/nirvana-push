@@ -1,6 +1,7 @@
 package com.nirvana.push.server;
 
 import com.nirvana.push.corex.ProtocolProcess;
+import com.nirvana.push.corex.session.Client;
 import com.nirvana.push.corex.session.NioSocketChannelSession;
 import com.nirvana.push.corex.session.Session;
 import com.nirvana.push.protocol.BasePackage;
@@ -17,6 +18,8 @@ public class PushServerHandlerX extends SimpleChannelInboundHandler<BasePackage>
     protected void channelRead0(ChannelHandlerContext ctx, BasePackage msg) throws Exception {
 
         ProtocolProcess process = ProtocolProcess.getInstance();
+
+        ctx.writeAndFlush("收到消息！！！");
 
         Session session = new NioSocketChannelSession(ctx.channel());
 
@@ -61,10 +64,8 @@ public class PushServerHandlerX extends SimpleChannelInboundHandler<BasePackage>
         if (evt instanceof IdleStateEvent) {
 
             Session session = new NioSocketChannelSession(ctx.channel());
-            //做断开连接处理
+            System.out.println("有连接断开");
             ProtocolProcess.getInstance().disConnect(session);
-            //关闭channel
-            ctx.channel().close();
 
         }
     }
@@ -75,8 +76,10 @@ public class PushServerHandlerX extends SimpleChannelInboundHandler<BasePackage>
     @Override
     public void channelInactive(ChannelHandlerContext ctx) throws Exception {
         Session session = new NioSocketChannelSession(ctx.channel());
+        System.out.println("有连接断开");
         ProtocolProcess.getInstance().disConnect(session);
-        ctx.channel().close();
+
+
     }
 
 

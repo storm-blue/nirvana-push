@@ -1,9 +1,7 @@
 package com.nirvana.push.corex.session;
 
-import io.netty.buffer.Unpooled;
 import io.netty.channel.Channel;
 import io.netty.util.AttributeKey;
-import io.netty.util.CharsetUtil;
 
 /**
  * NioSocketchannelSession实现
@@ -61,15 +59,6 @@ public class NioSocketChannelSession implements Session {
         channel.close();
     }
 
-    @Override
-    public void onMessage(Object message) {
-        System.out.println("是否活跃 >" + channel.isActive());
-        System.out.println("是否可写 >" + channel.isWritable());
-
-        channel.writeAndFlush(Unpooled.copiedBuffer((String) message, CharsetUtil.UTF_8)).addListener(future -> System.out.println("成功写入消息 >> " + message));
-    }
-
-
     public Channel getChannel() {
         return channel;
     }
@@ -78,6 +67,7 @@ public class NioSocketChannelSession implements Session {
         this.channel = channel;
     }
 
+    @Override
     public Long getSessionId() {
         return sessionId;
     }

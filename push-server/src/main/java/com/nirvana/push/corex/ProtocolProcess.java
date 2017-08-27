@@ -1,15 +1,15 @@
 package com.nirvana.push.corex;
 
+import com.nirvana.push.corex.publisher.Publisher;
+import com.nirvana.push.corex.publisher.SimplePublisher;
 import com.nirvana.push.corex.session.Client;
 import com.nirvana.push.corex.session.MapSessionHall;
 import com.nirvana.push.corex.session.Session;
 import com.nirvana.push.corex.subscriber.SubscriberStore;
 import com.nirvana.push.corex.topic.ITopic;
 import com.nirvana.push.corex.topic.MapTopicHall;
-import com.nirvana.push.corex.topic.Topic;
 import com.nirvana.push.corex.topic.TopicHall;
 import com.nirvana.push.protocol.BasePackage;
-import com.nirvana.push.protocol.UTF8StringPayloadPart;
 
 import java.util.Random;
 import java.util.Set;
@@ -25,17 +25,11 @@ public class ProtocolProcess {
 
     private static ProtocolProcess INSTANCE;
 
-    private MapSessionHall sessionHall;
+    private MapSessionHall sessionHall = MapSessionHall.getInstance();
 
-    private TopicHall topicHall;
+    private TopicHall topicHall = MapTopicHall.getInstance();
 
-    private SubscriberStore subscriberStore;
-
-    public ProtocolProcess() {
-        sessionHall = new MapSessionHall();
-        topicHall = new MapTopicHall();
-        subscriberStore =new SubscriberStore();
-    }
+    private SubscriberStore subscriberStore = SubscriberStore.getInstance();
 
 
     public static ProtocolProcess getInstance() {
@@ -51,14 +45,6 @@ public class ProtocolProcess {
      */
     public void onConnect(Session session, BasePackage _package) {
 
-    }
-
-    /**
-     * 订阅请求。
-     */
-    public void onSubscribe(Session session, BasePackage _package) {
-
-
         Client client = session.getClient();
         if (client == null) {
             client = new Client();
@@ -67,11 +53,21 @@ public class ProtocolProcess {
             sessionHall.putSession((client).getClientId(), session);
         }
 
+    }
+
+    /**
+     * 订阅请求。
+     */
+    public void onSubscribe(Session session, BasePackage _package) {
+
+        Long sessionId = session.getSessionId();
+        String topicName = "zhongc";
+
         ITopic topic = topicHall.getTopic("zhongc");
 
         if (topic != null) {
-            topic.addSubscriber(session);
-            subscriberStore.addTopicForSub(client.getClientId(),topic);
+            topic.addSubscriber(sessionId);
+            subscriberStore.addTopicForSub(sessionId, topic);
         }
     }
 
@@ -100,28 +96,11 @@ public class ProtocolProcess {
      * 发布消息请求。
      */
     public void onPublish(Session session, BasePackage _package) {
-        Client client = new Client();
-        client.setClientId(new Random().nextLong());
-        session.bindClient(client);
-        sessionHall.putSession(client.getClientId(), session);
-
-        if (topicHall.contains("zhongc")) {
-
-
-            String message = new UTF8StringPayloadPart(_package.getPayload().getByteBuf()).getMessage();
-
-            System.out.println("发布消息 ：" + message);
-
-            topicHall.getTopic("zhongc").onMessage(message);
-
-
-        } else {
-
-            ITopic topic = new Topic(session, "zhongc");
-            topicHall.addTopic(topic);
-        }
-
-
+        Long sessionId = session.getSessionId();
+        String topic = "zhongc";
+        Publisher publisher = new SimplePublisher(sessionId);
+        publisher.publish(topic);
+        publisher.pushMessage(topic, _package);
     }
 
 
@@ -144,8 +123,11 @@ public class ProtocolProcess {
 
         Client client = session.getClient();
 
+
         //从所有订阅的topic中将该session删除
         if (client != null) {
+            Long sessionId = client.getClientId();
+
             Set<ITopic> topics = subscriberStore.getTopicsBySub(client.getClientId());
 
             if (topics != null) {
@@ -153,7 +135,7 @@ public class ProtocolProcess {
                 for (ITopic topic : topics) {
 
                     if (sessionHall.isOnline(client.getClientId())) {
-                        topic.remvSubscriber(sessionHall.getSession(client.getClientId()));
+                        topic.remvSubscriber(sessionId);
                     }
 
                 }

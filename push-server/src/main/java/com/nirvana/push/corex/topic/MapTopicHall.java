@@ -13,8 +13,17 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class MapTopicHall implements TopicHall {
 
+    private MapTopicHall(){
 
-   private ConcurrentHashMap<String, ITopic> topicMap = new ConcurrentHashMap<>();
+    }
+
+    private static TopicHall topicHall = new MapTopicHall();
+
+    public static TopicHall getInstance(){
+        return topicHall;
+    }
+
+    private ConcurrentHashMap<String, ITopic> topicMap = new ConcurrentHashMap<>();
 
     @Override
     public void addTopic(ITopic topic) {
@@ -47,4 +56,6 @@ public class MapTopicHall implements TopicHall {
     public int count() {
         return topicMap.size();
     }
+
+
 }

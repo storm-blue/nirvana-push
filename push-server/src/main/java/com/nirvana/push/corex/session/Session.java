@@ -1,8 +1,5 @@
 package com.nirvana.push.corex.session;
 
-import com.nirvana.push.corex.publisher.Publisher;
-import com.nirvana.push.corex.subscriber.Subscriber;
-
 /**
  *  对channel进行的包装
  *
@@ -10,12 +7,14 @@ import com.nirvana.push.corex.subscriber.Subscriber;
  * @version 1.0
  * @date 2017-8-21
  */
-public interface Session extends Subscriber,Publisher {
+public interface Session  {
     /**
      * 会话绑定对象
      * @return
      */
     Client getClient();
+
+    Long getSessionId();
 
     /**
      * 绑定对象

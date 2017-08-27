@@ -11,6 +11,7 @@ import java.util.Set;
  */
 public interface TopicHall {
 
+
    //添加topic
    void addTopic(ITopic topic);
 

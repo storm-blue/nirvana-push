@@ -13,6 +13,16 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class MapSessionHall {
 
+    private MapSessionHall(){
+
+    }
+
+    private static MapSessionHall sessionHall=new MapSessionHall();
+
+    public static MapSessionHall getInstance() {
+        return sessionHall;
+    }
+
     /**
      * 在线会话
      */

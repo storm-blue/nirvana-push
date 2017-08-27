@@ -18,19 +18,19 @@ public interface ITopic {
     String getName();
 
     //获取该topic的发布者
-    Publisher getPublisher();
+    Long getPublisher();
 
     //获取所有topic的订阅者
-    Vector<Subscriber> getSubscriber();
+    Vector<Long> getSubscriber();
 
     //push消息
     void onMessage(Object msg);
 
     //添加订阅者
-    void addSubscriber(Subscriber o);
+    void addSubscriber(Long sessionId);
 
     //删除订阅者
-    void remvSubscriber(Subscriber o);
+    void remvSubscriber(Long sessionId);
 
     //订阅者数量
     int countSubscriber();

@@ -1,7 +1,7 @@
 package com.nirvana.push.corex.topic;
 
-import com.nirvana.push.corex.publisher.Publisher;
-import com.nirvana.push.corex.subscriber.Subscriber;
+import com.nirvana.push.corex.session.MapSessionHall;
+import com.nirvana.push.corex.session.Session;
 
 import java.util.Vector;
 
@@ -14,15 +14,17 @@ import java.util.Vector;
  */
 public class Topic implements ITopic {
 
-    private Vector<Subscriber> subs;
+    private Vector<Long> subs;
 
-    private Publisher publisher;
+    private Long publisher;
 
     private String name;
 
     private Long token;
 
-    public Topic(Publisher publisher,String name) {
+    private MapSessionHall sessionHall = MapSessionHall.getInstance();
+
+    public Topic(Long publisher, String name) {
         this.publisher = publisher;
         this.name = name;
         subs = new Vector<>();
@@ -35,39 +37,37 @@ public class Topic implements ITopic {
     }
 
     @Override
-    public Publisher getPublisher() {
+    public Long getPublisher() {
         return publisher;
     }
 
     @Override
-    public Vector<Subscriber> getSubscriber() {
+    public Vector<Long> getSubscriber() {
         return subs;
     }
 
     @Override
     public void onMessage(Object msg) {
 
-        for(Subscriber s:subs){
-
-            s.onMessage(msg);
+        for (Long sessionId : subs) {
+            Session session = sessionHall.getSession(sessionId);
+            session.write(msg);
         }
 
     }
 
     @Override
-    public void addSubscriber(Subscriber o) {
+    public void addSubscriber(Long sessionId) {
 
-        if (o == null)
-            throw new NullPointerException();
-        if (!subs.contains(o)) {
-            subs.addElement(o);
+        if (!subs.contains(sessionId)) {
+            subs.addElement(sessionId);
         }
 
     }
 
     @Override
-    public void remvSubscriber(Subscriber o) {
-        subs.removeElement(o);
+    public void remvSubscriber(Long sessionId) {
+        subs.removeElement(sessionId);
     }
 
     @Override

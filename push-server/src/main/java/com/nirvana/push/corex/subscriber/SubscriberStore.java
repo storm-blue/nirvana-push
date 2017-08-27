@@ -16,12 +16,19 @@ import java.util.concurrent.ConcurrentMap;
  */
 public class SubscriberStore {
 
+    private static SubscriberStore subscriberStore =new SubscriberStore();
+
+
+    public static SubscriberStore getInstance() {
+        return subscriberStore;
+    }
+
     //sub - > List<Topic>
-    private ConcurrentMap<Long, Set<ITopic>> persistentSubscriptionStore;
+    private ConcurrentMap<Long, Set<ITopic>> persistentSubscriptionStore = new ConcurrentHashMap<>();
 
 
-    public SubscriberStore() {
-        persistentSubscriptionStore = new ConcurrentHashMap<>();
+    private SubscriberStore() {
+
     }
 
 

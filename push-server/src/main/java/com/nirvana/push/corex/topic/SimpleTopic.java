@@ -1,7 +1,7 @@
 package com.nirvana.push.corex.topic;
 
-import com.nirvana.push.corex.session.MapSessionHall;
-import com.nirvana.push.corex.session.Session;
+import com.nirvana.push.corex.subscriber.Subscriber;
+import com.nirvana.push.corex.subscriber.SubscriberStore;
 
 import java.util.Vector;
 
@@ -22,7 +22,7 @@ public class SimpleTopic implements Topic {
 
     private Long token;
 
-    private MapSessionHall sessionHall = MapSessionHall.getInstance();
+    private SubscriberStore subscriberStore = SubscriberStore.getInstance();
 
     public SimpleTopic(Long publisher, String name) {
         this.publisher = publisher;
@@ -50,8 +50,8 @@ public class SimpleTopic implements Topic {
     public void onMessage(Object msg) {
 
         for (Long sessionId : subs) {
-            Session session = sessionHall.getSession(sessionId);
-            session.write(msg);
+            Subscriber subscriber = subscriberStore.getSubscriber(sessionId);
+            subscriber.onMessage(msg);
         }
 
     }

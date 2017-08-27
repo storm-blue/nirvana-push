@@ -1,6 +1,7 @@
 package com.nirvana.push.corex.subscriber;
 
 import com.nirvana.push.corex.session.MapSessionHall;
+import com.nirvana.push.corex.session.Session;
 import com.nirvana.push.corex.topic.MapTopicHall;
 import com.nirvana.push.corex.topic.TopicHall;
 
@@ -25,7 +26,12 @@ public class SimpleSubscriber implements Subscriber {
 
     @Override
     public void onMessage(Object message) {
-        sessionHall.getSession(sessionId).write(message);
+        Session session = sessionHall.getSession(sessionId);
+        if (session != null) {
+            if (session.isConnected()) {
+                session.write(message);
+            }
+        }
     }
 
     @Override

@@ -5,9 +5,10 @@ import com.nirvana.push.corex.publisher.SimplePublisher;
 import com.nirvana.push.corex.session.Client;
 import com.nirvana.push.corex.session.MapSessionHall;
 import com.nirvana.push.corex.session.Session;
+import com.nirvana.push.corex.subscriber.Subscriber;
 import com.nirvana.push.corex.subscriber.SubscriberStore;
-import com.nirvana.push.corex.topic.Topic;
 import com.nirvana.push.corex.topic.MapTopicHall;
+import com.nirvana.push.corex.topic.Topic;
 import com.nirvana.push.corex.topic.TopicHall;
 import com.nirvana.push.protocol.BasePackage;
 
@@ -25,10 +26,13 @@ public class ProtocolProcess {
 
     private static ProtocolProcess INSTANCE;
 
+    // 存储session
     private MapSessionHall sessionHall = MapSessionHall.getInstance();
 
+    //topic 存储
     private TopicHall topicHall = MapTopicHall.getInstance();
 
+    //订阅者 存储
     private SubscriberStore subscriberStore = SubscriberStore.getInstance();
 
 
@@ -59,16 +63,11 @@ public class ProtocolProcess {
      * 订阅请求。
      */
     public void onSubscribe(Session session, BasePackage _package) {
-
         Long sessionId = session.getSessionId();
         String topicName = "zhongc";
+        Subscriber subscriber = subscriberStore.getSubscriberEnhance(sessionId);
+        subscriber.subTopic(topicName);
 
-        Topic topic = topicHall.getTopic("zhongc");
-
-        if (topic != null) {
-            topic.addSubscriber(sessionId);
-            subscriberStore.addTopicForSub(sessionId, topic);
-        }
     }
 
     /**
@@ -99,7 +98,9 @@ public class ProtocolProcess {
         Long sessionId = session.getSessionId();
         String topic = "zhongc";
         Publisher publisher = new SimplePublisher(sessionId);
+        //发布主题
         publisher.publish(topic);
+        //想主题内发送消息
         publisher.pushMessage(topic, _package);
     }
 
@@ -123,27 +124,22 @@ public class ProtocolProcess {
 
         Client client = session.getClient();
 
-
         //从所有订阅的topic中将该session删除
         if (client != null) {
             Long sessionId = client.getClientId();
 
-            Set<Topic> topics = subscriberStore.getTopicsBySub(client.getClientId());
 
-            if (topics != null) {
+            if (subscriberStore.constanse(sessionId)) {
+                Subscriber subscriber = subscriberStore.getSubscriber(sessionId);
 
-                for (Topic topic : topics) {
+                for (String topicName : subscriber.getSubTopics()) {
 
-                    if (sessionHall.isOnline(client.getClientId())) {
-                        topic.remvSubscriber(sessionId);
-                    }
-
+                    topicHall.getTopic(topicName).remvSubscriber(sessionId);
                 }
+
             }
-
+            sessionHall.remvSession(client.getClientId());
         }
-
-        sessionHall.remvSession(client.getClientId());
 
         //关闭连接
         session.close();

@@ -1,6 +1,9 @@
 package com.nirvana.push.corex.subscriber;
 
 
+import com.nirvana.push.corex.topic.Topic;
+
+import java.util.Vector;
 
 /**
  *  订阅者
@@ -13,5 +16,13 @@ public interface Subscriber {
 
     //收到消息
     void onMessage( Object message);
+
+    Vector<String> getSubTopics();
+
+    void subTopic(String topicName);
+
+    void unSubTopic(String topicName);
+
+    boolean isSubTopic(String topicName);
 
 }

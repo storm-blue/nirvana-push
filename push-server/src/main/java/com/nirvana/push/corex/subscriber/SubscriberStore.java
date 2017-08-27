@@ -1,14 +1,10 @@
 package com.nirvana.push.corex.subscriber;
 
-import com.nirvana.push.corex.topic.Topic;
-
-import java.util.HashSet;
-import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
 /**
- * 保存订阅者与topic的关系
+ * 保存订阅者
  *
  * @author zc
  * @version 1.0
@@ -16,15 +12,14 @@ import java.util.concurrent.ConcurrentMap;
  */
 public class SubscriberStore {
 
-    private static SubscriberStore subscriberStore =new SubscriberStore();
+    private static SubscriberStore subscriberStore = new SubscriberStore();
 
 
     public static SubscriberStore getInstance() {
         return subscriberStore;
     }
 
-    //sub - > List<Topic>
-    private ConcurrentMap<Long, Set<Topic>> persistentSubscriptionStore = new ConcurrentHashMap<>();
+    private ConcurrentMap<Long, Subscriber> persistentSubscriptionStore = new ConcurrentHashMap<>();
 
 
     private SubscriberStore() {
@@ -32,26 +27,33 @@ public class SubscriberStore {
     }
 
 
-    public void addTopicForSub(Long clientId, Topic topic) {
+    public void addSubscriber(Long sessionId, Subscriber subscriber) {
+        persistentSubscriptionStore.put(sessionId, subscriber);
+    }
 
-        if (persistentSubscriptionStore.containsKey(clientId)) {
 
-            Set<Topic> topics = persistentSubscriptionStore.get(clientId);
+    public Subscriber getSubscriber(Long sessionId) {
+        return persistentSubscriptionStore.get(sessionId);
+    }
 
-            topics.add(topic);
+    public Subscriber getSubscriberEnhance(Long sessionId) {
+
+        Subscriber subscriber = persistentSubscriptionStore.get(sessionId);
+
+        if (subscriber == null) {
+            subscriber = new SimpleSubscriber(sessionId);
+            this.addSubscriber(sessionId, subscriber);
+
+            return subscriber;
+
         } else {
-
-            Set<Topic> topics = new HashSet<>();
-            topics.add(topic);
-
-            persistentSubscriptionStore.put(clientId, topics);
+            return subscriber;
         }
 
+
     }
 
-
-    public Set<Topic> getTopicsBySub(Long clientId) {
-        return persistentSubscriptionStore.get(clientId);
+    public boolean constanse(Long sessionId) {
+        return persistentSubscriptionStore.keySet().contains(sessionId);
     }
-
 }

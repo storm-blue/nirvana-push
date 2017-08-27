@@ -5,6 +5,9 @@ import com.nirvana.push.corex.topic.MapTopicHall;
 import com.nirvana.push.corex.topic.SimpleTopic;
 import com.nirvana.push.corex.topic.TopicHall;
 
+/**
+ * 发布者实现
+ */
 public class SimplePublisher implements Publisher {
 
     private TopicHall topicHall = MapTopicHall.getInstance();

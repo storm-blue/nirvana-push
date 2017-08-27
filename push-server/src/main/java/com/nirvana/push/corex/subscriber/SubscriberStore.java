@@ -1,6 +1,6 @@
 package com.nirvana.push.corex.subscriber;
 
-import com.nirvana.push.corex.topic.ITopic;
+import com.nirvana.push.corex.topic.Topic;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -24,7 +24,7 @@ public class SubscriberStore {
     }
 
     //sub - > List<Topic>
-    private ConcurrentMap<Long, Set<ITopic>> persistentSubscriptionStore = new ConcurrentHashMap<>();
+    private ConcurrentMap<Long, Set<Topic>> persistentSubscriptionStore = new ConcurrentHashMap<>();
 
 
     private SubscriberStore() {
@@ -32,16 +32,16 @@ public class SubscriberStore {
     }
 
 
-    public void addTopicForSub(Long clientId, ITopic topic) {
+    public void addTopicForSub(Long clientId, Topic topic) {
 
         if (persistentSubscriptionStore.containsKey(clientId)) {
 
-            Set<ITopic> topics = persistentSubscriptionStore.get(clientId);
+            Set<Topic> topics = persistentSubscriptionStore.get(clientId);
 
             topics.add(topic);
         } else {
 
-            Set<ITopic> topics = new HashSet<>();
+            Set<Topic> topics = new HashSet<>();
             topics.add(topic);
 
             persistentSubscriptionStore.put(clientId, topics);
@@ -50,7 +50,7 @@ public class SubscriberStore {
     }
 
 
-    public Set<ITopic> getTopicsBySub(Long clientId) {
+    public Set<Topic> getTopicsBySub(Long clientId) {
         return persistentSubscriptionStore.get(clientId);
     }
 

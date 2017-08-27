@@ -6,7 +6,7 @@ import com.nirvana.push.corex.session.Client;
 import com.nirvana.push.corex.session.MapSessionHall;
 import com.nirvana.push.corex.session.Session;
 import com.nirvana.push.corex.subscriber.SubscriberStore;
-import com.nirvana.push.corex.topic.ITopic;
+import com.nirvana.push.corex.topic.Topic;
 import com.nirvana.push.corex.topic.MapTopicHall;
 import com.nirvana.push.corex.topic.TopicHall;
 import com.nirvana.push.protocol.BasePackage;
@@ -63,7 +63,7 @@ public class ProtocolProcess {
         Long sessionId = session.getSessionId();
         String topicName = "zhongc";
 
-        ITopic topic = topicHall.getTopic("zhongc");
+        Topic topic = topicHall.getTopic("zhongc");
 
         if (topic != null) {
             topic.addSubscriber(sessionId);
@@ -128,11 +128,11 @@ public class ProtocolProcess {
         if (client != null) {
             Long sessionId = client.getClientId();
 
-            Set<ITopic> topics = subscriberStore.getTopicsBySub(client.getClientId());
+            Set<Topic> topics = subscriberStore.getTopicsBySub(client.getClientId());
 
             if (topics != null) {
 
-                for (ITopic topic : topics) {
+                for (Topic topic : topics) {
 
                     if (sessionHall.isOnline(client.getClientId())) {
                         topic.remvSubscriber(sessionId);

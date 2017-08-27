@@ -13,15 +13,15 @@ public interface TopicHall {
 
 
    //添加topic
-   void addTopic(ITopic topic);
+   void addTopic(Topic topic);
 
    //删除topic
    void remvTopic(String name);
 
    //获取所有topic
-   Set<ITopic> getAll();
+   Set<Topic> getAll();
 
-   ITopic getTopic(String name);
+   Topic getTopic(String name);
 
    boolean contains(String name);
 

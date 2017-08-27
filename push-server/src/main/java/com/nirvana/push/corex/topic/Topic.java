@@ -1,89 +1,38 @@
 package com.nirvana.push.corex.topic;
 
-import com.nirvana.push.corex.session.MapSessionHall;
-import com.nirvana.push.corex.session.Session;
+import com.nirvana.push.corex.publisher.Publisher;
+import com.nirvana.push.corex.subscriber.Subscriber;
 
 import java.util.Vector;
 
+
 /**
- * topic的简单实现,使用观察者模式
+ * topic
  *
  * @author zc
  * @version 1.0
  * @date 2017-8-21
  */
-public class Topic implements ITopic {
+public interface Topic {
 
-    private Vector<Long> subs;
+    String getName();
 
-    private Long publisher;
+    //获取该topic的发布者
+    Long getPublisher();
 
-    private String name;
+    //获取所有topic的订阅者
+    Vector<Long> getSubscriber();
 
-    private Long token;
+    //push消息
+    void onMessage(Object msg);
 
-    private MapSessionHall sessionHall = MapSessionHall.getInstance();
+    //添加订阅者
+    void addSubscriber(Long sessionId);
 
-    public Topic(Long publisher, String name) {
-        this.publisher = publisher;
-        this.name = name;
-        subs = new Vector<>();
+    //删除订阅者
+    void remvSubscriber(Long sessionId);
 
-    }
+    //订阅者数量
+    int countSubscriber();
 
-    @Override
-    public String getName() {
-        return name;
-    }
-
-    @Override
-    public Long getPublisher() {
-        return publisher;
-    }
-
-    @Override
-    public Vector<Long> getSubscriber() {
-        return subs;
-    }
-
-    @Override
-    public void onMessage(Object msg) {
-
-        for (Long sessionId : subs) {
-            Session session = sessionHall.getSession(sessionId);
-            session.write(msg);
-        }
-
-    }
-
-    @Override
-    public void addSubscriber(Long sessionId) {
-
-        if (!subs.contains(sessionId)) {
-            subs.addElement(sessionId);
-        }
-
-    }
-
-    @Override
-    public void remvSubscriber(Long sessionId) {
-        subs.removeElement(sessionId);
-    }
-
-    @Override
-    public int countSubscriber() {
-        return subs.size();
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public Long getToken() {
-        return token;
-    }
-
-    public void setToken(Long token) {
-        this.token = token;
-    }
 }

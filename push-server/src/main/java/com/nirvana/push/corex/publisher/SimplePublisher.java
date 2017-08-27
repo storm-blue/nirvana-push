@@ -1,8 +1,8 @@
 package com.nirvana.push.corex.publisher;
 
-import com.nirvana.push.corex.topic.ITopic;
-import com.nirvana.push.corex.topic.MapTopicHall;
 import com.nirvana.push.corex.topic.Topic;
+import com.nirvana.push.corex.topic.MapTopicHall;
+import com.nirvana.push.corex.topic.SimpleTopic;
 import com.nirvana.push.corex.topic.TopicHall;
 
 public class SimplePublisher implements Publisher {
@@ -18,7 +18,7 @@ public class SimplePublisher implements Publisher {
 
     @Override
     public void publish(String topicName) {
-        ITopic topic = new Topic(this, topicName);
+        Topic topic = new SimpleTopic(sessionId, topicName);
         topicHall.addTopic(topic);
     }
 

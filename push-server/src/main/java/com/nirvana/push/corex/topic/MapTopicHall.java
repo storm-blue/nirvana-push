@@ -23,10 +23,10 @@ public class MapTopicHall implements TopicHall {
         return topicHall;
     }
 
-    private ConcurrentHashMap<String, ITopic> topicMap = new ConcurrentHashMap<>();
+    private ConcurrentHashMap<String, Topic> topicMap = new ConcurrentHashMap<>();
 
     @Override
-    public void addTopic(ITopic topic) {
+    public void addTopic(Topic topic) {
         topicMap.put(topic.getName(), topic);
     }
 
@@ -38,12 +38,12 @@ public class MapTopicHall implements TopicHall {
 
 
     @Override
-    public Set<ITopic> getAll() {
+    public Set<Topic> getAll() {
         return null;
     }
 
     @Override
-    public ITopic getTopic(String name) {
+    public Topic getTopic(String name) {
         return topicMap.get(name);
     }
 

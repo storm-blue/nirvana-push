@@ -50,6 +50,7 @@ public class DefaultChannelAgent extends AbstractChannelAgent {
     void onUnsubscribe(boolean identifiable, Long identifier, ByteBuf data) {
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     void onPublish(PackageLevel level, boolean retain, boolean identifiable, Long identifier, ByteBuf data) {
         publisher.publish(new UTF8StringPayloadPart(data).getMessage());

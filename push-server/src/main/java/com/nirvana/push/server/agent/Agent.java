@@ -10,9 +10,9 @@ import com.nirvana.push.protocol.BasePackage;
 public interface Agent {
 
     /**
-     * 接收到一个完整协议包时触发。
+     * 接收到客户端命令时触发。
      */
-    void onAccept(BasePackage pkg);
+    void onCommand(BasePackage pkg);
 
     /**
      * 像远程发送一个协议包。

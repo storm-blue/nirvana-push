@@ -22,7 +22,7 @@ public abstract class AbstractChannelAgent implements Agent {
     }
 
     @Override
-    public void onAccept(BasePackage pkg) {
+    public void onCommand(BasePackage pkg) {
 
         boolean identifiable = pkg.isIdentifiable();
         Long identifier = pkg.getIdentifier();

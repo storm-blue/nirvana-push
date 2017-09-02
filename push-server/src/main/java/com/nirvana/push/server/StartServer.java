@@ -9,12 +9,13 @@ public class StartServer {
 
     /**
      * 启动服务
+     *
      * @param args
      */
-    public static void main(String[] args){
+    public static void main(String[] args) {
         final PushServer pushServer = new PushServer();
         ChannelFuture future = pushServer.startServer();
-        Runtime.getRuntime().addShutdownHook(new Thread(() -> pushServer.destory()));
+        Runtime.getRuntime().addShutdownHook(new Thread(pushServer::destroy));
         future.channel().closeFuture().syncUninterruptibly();
     }
 }

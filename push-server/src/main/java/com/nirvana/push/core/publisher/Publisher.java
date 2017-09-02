@@ -1,5 +1,7 @@
 package com.nirvana.push.core.publisher;
 
+import com.nirvana.push.core.broker.MessageHall;
+
 import java.util.Collection;
 
 /**

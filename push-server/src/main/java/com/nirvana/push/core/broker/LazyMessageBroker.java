@@ -7,9 +7,13 @@ import java.util.Collection;
  * 当外部线程调用work()方法时，此代理才会工作一次。
  * Created by Nirvana on 2017/8/3.
  */
-public class LazyMessageBroker extends AbstractMessageBroker {
+public class LazyMessageBroker extends MessageBroker {
 
     private Topic topic;
+
+    public LazyMessageBroker(Object identifier) {
+        super(identifier);
+    }
 
     @Override
     public void putMessage(Object msg) {

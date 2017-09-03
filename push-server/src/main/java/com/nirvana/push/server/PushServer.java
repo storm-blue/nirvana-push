@@ -1,7 +1,7 @@
 package com.nirvana.push.server;
 
-import com.nirvana.push.core.broker.AbstractMessageBroker;
 import com.nirvana.push.core.broker.AutoMessageBroker;
+import com.nirvana.push.core.broker.MessageBroker;
 import com.nirvana.push.protocol.decoder.PackageFrameDecoder;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.*;
@@ -19,7 +19,7 @@ public class PushServer {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(PushServer.class);
 
-    public static final AbstractMessageBroker PUBLIC_MESSAGE_BROKER = new AutoMessageBroker();
+    public static final MessageBroker PUBLIC_MESSAGE_BROKER = new AutoMessageBroker("DEFAULT");
 
     private int port = 32222;
 

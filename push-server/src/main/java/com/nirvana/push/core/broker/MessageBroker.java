@@ -1,6 +1,7 @@
 package com.nirvana.push.core.broker;
 
 import com.nirvana.push.core.subscriber.Subscriber;
+import com.nirvana.push.utils.Assert;
 
 import java.util.Collection;
 import java.util.HashSet;
@@ -11,9 +12,19 @@ import java.util.Set;
  * Publisher/Subscriber/Topic之间的关系。
  * Created by Nirvana on 2017/8/3.
  */
-public abstract class AbstractMessageBroker implements MessageHall {
+public abstract class MessageBroker implements MessageHall {
+
+    /**
+     * 标识符一旦创建不可更改。
+     */
+    private final Object identifier;
 
     private Set<Subscriber> subscribers = new HashSet<>();
+
+    public MessageBroker(Object identifier) {
+        Assert.notNull(identifier, "标识符不能为空");
+        this.identifier = identifier;
+    }
 
     public void addSubscriber(Subscriber subscriber) {
         subscribers.add(subscriber);
@@ -36,4 +47,22 @@ public abstract class AbstractMessageBroker implements MessageHall {
         }
     }
 
+    public Object getIdentifier() {
+        return identifier;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        MessageBroker that = (MessageBroker) o;
+
+        return identifier.equals(that.identifier);
+    }
+
+    @Override
+    public int hashCode() {
+        return identifier.hashCode();
+    }
 }

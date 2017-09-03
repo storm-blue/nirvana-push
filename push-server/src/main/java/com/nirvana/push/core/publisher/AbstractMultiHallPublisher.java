@@ -8,7 +8,7 @@ import java.util.Collection;
  * 绑定多个MessageHall的发布者。
  * Created by Nirvana on 2017/8/3.
  */
-public class AbstractMultiHallPublisher<T> implements Publisher<T> {
+public class AbstractMultiHallPublisher<T> implements FreePublisher<T> {
 
     private Collection<MessageHall> halls;
 

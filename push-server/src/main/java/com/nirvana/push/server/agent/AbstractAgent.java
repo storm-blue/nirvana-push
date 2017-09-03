@@ -9,17 +9,7 @@ import io.netty.channel.socket.SocketChannel;
  * 代理类的骨架实现。
  * Created by Nirvana on 2017/8/7.
  */
-public abstract class AbstractChannelAgent implements Agent {
-
-    private SocketChannel channel;
-
-    public AbstractChannelAgent(SocketChannel channel) {
-        this.channel = channel;
-    }
-
-    public SocketChannel getChannel() {
-        return channel;
-    }
+public abstract class AbstractAgent implements Agent {
 
     @Override
     public void onCommand(BasePackage pkg) {
@@ -55,14 +45,6 @@ public abstract class AbstractChannelAgent implements Agent {
                 break;
         }
 
-    }
-
-    /**
-     * 像远程发送一个协议包。
-     */
-    public void sendPackage(BasePackage pkg) {
-        channel.write(pkg.getByteBuf());
-        channel.flush();
     }
 
     /**

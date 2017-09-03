@@ -8,7 +8,7 @@ import java.util.Collection;
  * 绑定单个MessageHall的发布者。
  * Created by Nirvana on 2017/8/3.
  */
-public abstract class AbstractBindHallPublisher<T> implements Publisher<T> {
+public abstract class AbstractBindHallPublisher<T> implements FreePublisher<T> {
 
     private MessageHall hall;
 

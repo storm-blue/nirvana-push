@@ -3,7 +3,7 @@ package com.nirvana.push.protocol;
 import com.nirvana.push.utils.CodeEnumerator;
 
 /**
- * com.nirvana.push.protocol.PackageType.java.
+ * PackageType.java.
  * <p>
  * Created by Nirvana on 2017/8/9.
  */

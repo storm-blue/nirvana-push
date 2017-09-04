@@ -1,6 +1,6 @@
 package com.nirvana.push.server;
 
-import com.nirvana.push.server.agent.Agent;
+import com.nirvana.push.core.agent.Agent;
 import io.netty.channel.Channel;
 import io.netty.channel.socket.nio.NioSocketChannel;
 

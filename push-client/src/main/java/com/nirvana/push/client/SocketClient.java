@@ -6,7 +6,6 @@ import com.nirvana.push.protocol.PackageType;
 import com.nirvana.push.protocol.UTF8StringPayloadPart;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.Socket;
 

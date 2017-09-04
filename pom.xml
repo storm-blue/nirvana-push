@@ -11,6 +11,7 @@
     <modules>
         <module>push-client</module>
         <module>push-server</module>
+        <module>push-core</module>
     </modules>
 
     <dependencies>

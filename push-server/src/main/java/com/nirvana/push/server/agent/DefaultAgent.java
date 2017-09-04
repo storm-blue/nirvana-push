@@ -1,5 +1,6 @@
 package com.nirvana.push.server.agent;
 
+import com.nirvana.push.core.agent.AbstractAgent;
 import com.nirvana.push.core.publisher.NamePublisher;
 import com.nirvana.push.core.publisher.SimpleStringPublisher;
 import com.nirvana.push.core.subscriber.StringSubscriber;
@@ -26,39 +27,39 @@ public class DefaultAgent extends AbstractAgent {
     }
 
     @Override
-    void onConnect(boolean identifiable, Long identifier, ByteBuf data) {
+    public void onConnect(boolean identifiable, Long identifier, ByteBuf data) {
 
     }
 
     @Override
-    void onSubscribe(boolean identifiable, Long identifier, ByteBuf data) {
+    public void onSubscribe(boolean identifiable, Long identifier, ByteBuf data) {
     }
 
     @Override
-    void onPushMessageAck(boolean identifiable, Long identifier, ByteBuf data) {
-
-    }
-
-    @Override
-    void onExactlyOnceMessageAck(boolean identifiable, Long identifier, ByteBuf data) {
+    public void onPushMessageAck(boolean identifiable, Long identifier, ByteBuf data) {
 
     }
 
     @Override
-    void onUnsubscribe(boolean identifiable, Long identifier, ByteBuf data) {
-    }
-
-    @Override
-    void onPublish(PackageLevel level, boolean retain, boolean identifiable, Long identifier, ByteBuf data) {
-    }
-
-    @Override
-    void onPing(boolean identifiable, Long identifier, ByteBuf data) {
+    public void onExactlyOnceMessageAck(boolean identifiable, Long identifier, ByteBuf data) {
 
     }
 
     @Override
-    void onDisconnect(boolean identifiable, Long identifier, ByteBuf data) {
+    public void onUnsubscribe(boolean identifiable, Long identifier, ByteBuf data) {
+    }
+
+    @Override
+    public void onPublish(PackageLevel level, boolean retain, boolean identifiable, Long identifier, ByteBuf data) {
+    }
+
+    @Override
+    public void onPing(boolean identifiable, Long identifier, ByteBuf data) {
+
+    }
+
+    @Override
+    public void onDisconnect(boolean identifiable, Long identifier, ByteBuf data) {
 
     }
 

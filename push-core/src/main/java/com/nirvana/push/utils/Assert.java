@@ -83,7 +83,7 @@ public class Assert {
                 throw new IllegalArgumentException(msg);
             }
         }
-        if (min == null && max != null) {
+        if (min == null) {
             if (length > max) {
                 throw new IllegalArgumentException(msg);
             }
@@ -117,7 +117,7 @@ public class Assert {
                 throw new IllegalArgumentException(LENGTH_BETWEEN[0] + min + LENGTH_BETWEEN[1] + max + LENGTH_BETWEEN[2]);
             }
         }
-        if (min == null && max != null) {
+        if (min == null) {
             if (length > max) {
                 throw new IllegalArgumentException(LENGTH_LTE[0] + max + LENGTH_LTE[1]);
             }

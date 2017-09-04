@@ -1,9 +1,9 @@
 package com.nirvana.push.protocol.decoder;
 
+import com.nirvana.push.protocol.ScalableNumberPart;
 import com.nirvana.push.protocol.BasePackage;
 import com.nirvana.push.protocol.HeaderPart;
 import com.nirvana.push.protocol.PayloadPart;
-import com.nirvana.push.protocol.ScalableNumberPart;
 import com.nirvana.push.protocol.exception.ProtocolException;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelFuture;

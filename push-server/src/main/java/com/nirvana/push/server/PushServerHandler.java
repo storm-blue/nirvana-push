@@ -1,7 +1,7 @@
 package com.nirvana.push.server;
 
 import com.nirvana.push.protocol.BasePackage;
-import com.nirvana.push.server.agent.Agent;
+import com.nirvana.push.core.agent.Agent;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
@@ -27,10 +27,6 @@ public class PushServerHandler extends SimpleChannelInboundHandler<BasePackage> 
 
     /**
      * 事件追踪，处理超时事件
-     *
-     * @param ctx
-     * @param evt
-     * @throws Exception
      */
     @Override
     public void userEventTriggered(ChannelHandlerContext ctx, Object evt) throws Exception {

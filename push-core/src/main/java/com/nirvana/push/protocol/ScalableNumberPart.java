@@ -1,7 +1,7 @@
 package com.nirvana.push.protocol;
 
-import com.nirvana.push.protocol.exception.ScalableNumCreateException;
 import com.nirvana.push.protocol.exception.ScalableNumStateException;
+import com.nirvana.push.protocol.exception.ScalableNumCreateException;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 

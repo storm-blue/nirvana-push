@@ -1,6 +1,6 @@
 package com.nirvana.push.core.subscriber;
 
-import com.nirvana.push.server.agent.Agent;
+import com.nirvana.push.core.agent.Agent;
 import com.nirvana.push.protocol.BasePackage;
 import com.nirvana.push.protocol.PackageLevel;
 import com.nirvana.push.protocol.PackageType;

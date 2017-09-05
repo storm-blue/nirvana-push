@@ -9,24 +9,24 @@ import java.util.Collection;
  * 简单写入到默认MessageBroker的发布者。
  * Created by Nirvana on 2017/8/17.
  */
-public class SimpleStringPublisher implements NamePublisher<String> {
+public class DefaultNamePublisher<T> implements NamePublisher<T> {
 
     private MessageBrokerSource brokerSource = MessageBrokerSource.getSource();
 
-    public SimpleStringPublisher() {
+    public DefaultNamePublisher() {
     }
 
     @Override
-    public void publish(String name, String msg) {
+    public void publish(String name, T msg) {
         MessageBroker broker = brokerSource.create(name);
         broker.putMessage(msg);
     }
 
     @Override
-    public void publish(String name, Collection<String> msg) {
+    public void publish(String name, Collection<T> msg) {
         MessageBroker broker = brokerSource.create(name);
-        for (String string : msg) {
-            broker.putMessage(string);
+        for (T m : msg) {
+            broker.putMessage(m);
         }
     }
 }

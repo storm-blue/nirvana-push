@@ -2,7 +2,7 @@ package com.nirvana.push.server.agent;
 
 import com.nirvana.push.core.agent.AbstractAgent;
 import com.nirvana.push.core.publisher.NamePublisher;
-import com.nirvana.push.core.publisher.SimpleStringPublisher;
+import com.nirvana.push.core.publisher.DefaultNamePublisher;
 import com.nirvana.push.core.subscriber.StringSubscriber;
 import com.nirvana.push.core.subscriber.Subscriber;
 import com.nirvana.push.protocol.BasePackage;
@@ -20,7 +20,7 @@ public class DefaultAgent extends AbstractAgent {
 
     private Subscriber subscriber = new StringSubscriber(this);
 
-    private NamePublisher<String> publisher = new SimpleStringPublisher();
+    protected static final NamePublisher<String> publisher = new DefaultNamePublisher<>();
 
     public DefaultAgent(SocketChannel channel) {
         this.channel = channel;

@@ -22,9 +22,11 @@ public class BasePackage extends OutputableArray {
 
     private final PayloadPart payload;
 
-    public BasePackage(PackageType type, PackageLevel level, boolean identifiable, boolean retain, Long identifier, PayloadPart payload) {
+    public BasePackage(PackageType type, PackageLevel level, boolean retain, Long identifier, PayloadPart payload) {
 
         Assert.notNull(payload, "负载不能为空。");
+
+        boolean identifiable = identifier != null;
 
         this.header = new HeaderPart(type, level, identifiable, retain);
         addElement(header);

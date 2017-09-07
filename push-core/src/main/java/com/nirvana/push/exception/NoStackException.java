@@ -6,6 +6,8 @@ package com.nirvana.push.exception;
  */
 public class NoStackException extends RuntimeException {
 
+    private static boolean fill = true;
+
     public NoStackException() {
         super();
     }
@@ -16,6 +18,10 @@ public class NoStackException extends RuntimeException {
 
     @Override
     public Throwable fillInStackTrace() {
-        return this;
+        if (fill) {
+            return super.fillInStackTrace();
+        } else {
+            return this;
+        }
     }
 }

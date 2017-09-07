@@ -27,18 +27,18 @@ public class DSTPackage {
      * @see #get(String)
      * @see #get(int)
      */
-    private Map<String, String> values = new HashMap<>();
+    private Map<String, DSTElement> values = new HashMap<>();
 
     /**
      * 从Values构建一个DST 协议包.
      */
-    public DSTPackage(String... values) {
+    public DSTPackage(String[] values) {
         StringBuilder contentBuilder = new StringBuilder();
         for (String value : values) {
             DSTElement element = new DSTElement(value);
             elements.add(element);
             contentBuilder.append(element.content()).append('\n');
-            this.values.put(String.valueOf(DSTDefinition.SEPARATOR) + (elements.size() - 1), value);
+            this.values.put(String.valueOf(DSTDefinition.SEPARATOR) + (elements.size() - 1), element);
         }
         content = contentBuilder.toString();
     }
@@ -52,9 +52,9 @@ public class DSTPackage {
             this.elements.add(element);
             contentBuilder.append(element.content()).append('\n');
             if (element.plain()) {
-                values.put(String.valueOf(DSTDefinition.SEPARATOR) + (this.elements.size() - 1), element.getValue());
+                values.put(String.valueOf(DSTDefinition.SEPARATOR) + (this.elements.size() - 1), element);
             } else {
-                values.put(element.getKey(), element.getValue());
+                values.put(element.getKey(), element);
             }
         }
         content = contentBuilder.toString();
@@ -86,19 +86,19 @@ public class DSTPackage {
                         break;
                     }
                 }
-                if (!DSTDefinition.delimiters.contains(delimiter.toString())) {
+                if (!DSTDefinition.DELIMITERS.contains(delimiter.toString())) {
                     throw new ProtocolException("未知分隔符:index:" + index);
                 }
                 if (!crossSeparator) {
                     throw new ProtocolException("格式错误，缺少:\'" + DSTDefinition.SEPARATOR + "\'index:" + index);
                 }
 
-                DSTElement element = new DSTElement(keyBuilder.toString(), valueBuilder.toString());
+                DSTElement element = new DSTElement(keyBuilder.toString(), DSTDefinition.decode(valueBuilder.toString()));
                 elements.add(element);
                 if (element.plain()) {
-                    values.put(String.valueOf(DSTDefinition.SEPARATOR) + (elements.size() - 1), element.getValue());
+                    values.put(String.valueOf(DSTDefinition.SEPARATOR) + (elements.size() - 1), element);
                 } else {
-                    values.put(element.getKey(), element.getValue());
+                    values.put(element.getKey(), element);
                 }
 
                 keyBuilder = new StringBuilder();
@@ -136,7 +136,8 @@ public class DSTPackage {
         if (key.contains(String.valueOf(DSTDefinition.SEPARATOR))) {
             throw new ProtocolException("Key值不合法");
         }
-        return values.get(key);
+        DSTElement element = values.get(key);
+        return element == null ? null : element.getValue();
     }
 
     /**
@@ -146,7 +147,8 @@ public class DSTPackage {
      * @return 如果目标index无简单DSTElement元素，返回null.否则返回值
      */
     public String get(int index) {
-        return values.get(String.valueOf(DSTDefinition.SEPARATOR) + index);
+        DSTElement element = values.get(String.valueOf(DSTDefinition.SEPARATOR) + index);
+        return element == null ? null : element.getValue();
     }
 
     /**

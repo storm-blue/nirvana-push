@@ -11,36 +11,35 @@ import io.netty.buffer.ByteBuf;
 public abstract class AbstractAgent implements Agent {
 
     @Override
-    public void onCommand(BasePackage pkg) {
+    public final void onCommand(BasePackage pkg) {
 
-        boolean identifiable = pkg.isIdentifiable();
         Long identifier = pkg.getIdentifier();
         ByteBuf payload = pkg.getPayload() == null ? null : pkg.getPayload().getByteBuf();
 
         switch (pkg.getPackageType()) {
             case CONNECT:
-                onConnect(identifiable, identifier, payload);
+                onConnect(identifier, payload);
                 break;
             case SUBSCRIBE:
-                onSubscribe(identifiable, identifier, payload);
+                onSubscribe(identifier, payload);
                 break;
             case PUSH_MESSAGE_ACK:
-                onPushMessageAck(identifiable, identifier, payload);
+                onPushMessageAck(identifier, payload);
                 break;
             case EXACTLY_ONCE_MESSAGE_ACK:
-                onExactlyOnceMessageAck(identifiable, identifier, payload);
+                onExactlyOnceMessageAck(identifier, payload);
                 break;
             case UNSUBSCRIBE:
-                onUnsubscribe(identifiable, identifier, payload);
+                onUnsubscribe(identifier, payload);
                 break;
             case PUBLISH:
-                onPublish(pkg.getPackageLevel(), pkg.isRetain(), identifiable, identifier, payload);
+                onPublish(pkg.getPackageLevel(), pkg.isRetain(), identifier, payload);
                 break;
             case PING:
-                onPing(identifiable, identifier, payload);
+                onPing(identifier, payload);
                 break;
             case DISCONNECT:
-                onDisconnect(identifiable, identifier, payload);
+                onDisconnect(identifier, payload);
                 break;
         }
 
@@ -49,40 +48,40 @@ public abstract class AbstractAgent implements Agent {
     /**
      * 客户端连接请求。
      */
-    public abstract void onConnect(boolean identifiable, Long identifier, ByteBuf data);
+    protected abstract void onConnect(Long identifier, ByteBuf data);
 
     /**
      * 订阅请求。
      */
-    public abstract void onSubscribe(boolean identifiable, Long identifier, ByteBuf data);
+    protected abstract void onSubscribe(Long identifier, ByteBuf data);
 
     /**
      * 接收到推送消息确认。
      */
-    public abstract void onPushMessageAck(boolean identifiable, Long identifier, ByteBuf data);
+    protected abstract void onPushMessageAck(Long identifier, ByteBuf data);
 
     /**
      * 接收到有且仅一次推送消息确认。
      */
-    public abstract void onExactlyOnceMessageAck(boolean identifiable, Long identifier, ByteBuf data);
+    protected abstract void onExactlyOnceMessageAck(Long identifier, ByteBuf data);
 
     /**
      * 取消订阅请求。
      */
-    public abstract void onUnsubscribe(boolean identifiable, Long identifier, ByteBuf data);
+    protected abstract void onUnsubscribe(Long identifier, ByteBuf data);
 
     /**
      * 发布消息请求。
      */
-    public abstract void onPublish(PackageLevel level, boolean retain, boolean identifiable, Long identifier, ByteBuf data);
+    protected abstract void onPublish(PackageLevel level, boolean retain, Long identifier, ByteBuf data);
 
     /**
      * 客户端心跳。
      */
-    public abstract void onPing(boolean identifiable, Long identifier, ByteBuf data);
+    protected abstract void onPing(Long identifier, ByteBuf data);
 
     /**
      * 客户端断开连接请求。
      */
-    public abstract void onDisconnect(boolean identifiable, Long identifier, ByteBuf data);
+    protected abstract void onDisconnect(Long identifier, ByteBuf data);
 }

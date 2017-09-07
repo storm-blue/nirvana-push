@@ -26,6 +26,6 @@ public class StringSubscriber implements Subscriber<String> {
     @Override
     public void onMessage(String msg) {
         LOGGER.debug("订阅器开始处理获得的消息：{}", msg);
-        agent.sendPackage(new BasePackage(PackageType.PUSH_MESSAGE, PackageLevel.NO_CONFIRM, false, false, null, new UTF8StringPayloadPart(msg)));
+        agent.sendPackage(new BasePackage(PackageType.PUSH_MESSAGE, PackageLevel.NO_CONFIRM, false, null, new UTF8StringPayloadPart(msg)));
     }
 }

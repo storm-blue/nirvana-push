@@ -13,10 +13,10 @@ import io.netty.buffer.Unpooled;
 public class ScalableNumberPart extends AbstractOutputable {
 
     //最大字节数
-    public static final int LONG_INT_MAX_BYTES = 8;
+    private static final int LONG_INT_MAX_BYTES = 8;
 
     //可编码的最大值
-    public static final long[] MAX_VALUES = {127L, 16383L, 2097151L, 268435455L, 34359738367L, 4398046511103L, 562949953421311L, 72057594037927935L};
+    static final long[] MAX_VALUES = {127L, 16383L, 2097151L, 268435455L, 34359738367L, 4398046511103L, 562949953421311L, 72057594037927935L};
 
     /*可变字节的值*/
     private long value = 0;

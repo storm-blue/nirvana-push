@@ -22,9 +22,14 @@ import java.util.Objects;
  * [1-tom]
  * [1::a-tom]
  * [1::b-jack]
+ * ===============================特殊字符=================================
+ * 特殊字符有'-','~','\r','\n',key值中不允许出现特殊字符。value中如果出现特殊字符，则需要转码处理。
+ * -
  * Created by Nirvana on 2017/9/5.
  */
 public class DSTElement {
+
+    private final String content;
 
     private final String key;
 
@@ -39,12 +44,16 @@ public class DSTElement {
     public DSTElement(String key, String value) {
         key = key == null ? "" : key;
         value = value == null ? "" : value;
-        if (key.contains(String.valueOf(DSTDefinition.SEPARATOR))) {
-            throw new ProtocolException("Key值中不能包含字符:'-'");
+        for (char c : key.toCharArray()) {
+            if (DSTDefinition.SPECIAL_CHARACTERS.contains(c)) {
+                throw new ProtocolException("Key值中不能包含字符:'-','~','\\r','\\n'");
+            }
         }
+
         this.key = key;
         this.value = value;
         this.plain = Objects.equals(key, "");
+        this.content = key + DSTDefinition.SEPARATOR + DSTDefinition.encode(value);
     }
 
     /**
@@ -69,7 +78,7 @@ public class DSTElement {
      * 获取元素原始文本。
      */
     public String content() {
-        return key + DSTDefinition.SEPARATOR + value;
+        return content;
     }
 
     @Override

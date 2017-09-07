@@ -27,44 +27,49 @@ public class DefaultAgent extends AbstractAgent {
     }
 
     @Override
-    public void onConnect(boolean identifiable, Long identifier, ByteBuf data) {
+    public void onConnect(Long identifier, ByteBuf data) {
 
     }
 
     @Override
-    public void onSubscribe(boolean identifiable, Long identifier, ByteBuf data) {
+    public void onSubscribe(Long identifier, ByteBuf data) {
     }
 
     @Override
-    public void onPushMessageAck(boolean identifiable, Long identifier, ByteBuf data) {
-
-    }
-
-    @Override
-    public void onExactlyOnceMessageAck(boolean identifiable, Long identifier, ByteBuf data) {
+    public void onPushMessageAck(Long identifier, ByteBuf data) {
 
     }
 
     @Override
-    public void onUnsubscribe(boolean identifiable, Long identifier, ByteBuf data) {
-    }
-
-    @Override
-    public void onPublish(PackageLevel level, boolean retain, boolean identifiable, Long identifier, ByteBuf data) {
-    }
-
-    @Override
-    public void onPing(boolean identifiable, Long identifier, ByteBuf data) {
+    public void onExactlyOnceMessageAck(Long identifier, ByteBuf data) {
 
     }
 
     @Override
-    public void onDisconnect(boolean identifiable, Long identifier, ByteBuf data) {
+    public void onUnsubscribe(Long identifier, ByteBuf data) {
+    }
+
+    @Override
+    public void onPublish(PackageLevel level, boolean retain, Long identifier, ByteBuf data) {
+    }
+
+    @Override
+    public void onPing(Long identifier, ByteBuf data) {
+
+    }
+
+    @Override
+    public void onDisconnect(Long identifier, ByteBuf data) {
 
     }
 
     @Override
     public void sendPackage(BasePackage pkg) {
         channel.writeAndFlush(pkg.getByteBuf());
+    }
+
+    @Override
+    public void disconnect() {
+
     }
 }

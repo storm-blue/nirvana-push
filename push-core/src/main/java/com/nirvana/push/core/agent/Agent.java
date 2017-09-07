@@ -19,4 +19,9 @@ public interface Agent {
      */
     void sendPackage(BasePackage pkg);
 
+    /**
+     * 断开连接。
+     */
+    void disconnect();
+
 }

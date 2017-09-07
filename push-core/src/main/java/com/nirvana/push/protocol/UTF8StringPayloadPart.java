@@ -15,6 +15,9 @@ public class UTF8StringPayloadPart extends PayloadPart {
 
     private String message;
 
+    protected UTF8StringPayloadPart() {
+    }
+
     public UTF8StringPayloadPart(String message) {
         this.message = message;
         this.buf = Unpooled.copiedBuffer(message, CHARSET);

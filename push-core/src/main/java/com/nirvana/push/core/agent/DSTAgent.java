@@ -1,6 +1,10 @@
 package com.nirvana.push.core.agent;
 
+import com.nirvana.push.core.DestroyFailedException;
 import com.nirvana.push.core.agent.exception.ConnectException;
+import com.nirvana.push.core.publisher.DefaultNamePublisher;
+import com.nirvana.push.core.publisher.NamePublisher;
+import com.nirvana.push.core.subscriber.DSTSubscriber;
 import com.nirvana.push.protocol.BasePackage;
 import com.nirvana.push.protocol.PackageLevel;
 import com.nirvana.push.protocol.PackageType;
@@ -14,7 +18,7 @@ import io.netty.buffer.ByteBuf;
 import java.nio.charset.Charset;
 
 /**
- * DST协议的实现。
+ * DST协议的实现。TODO:精准的消息级别，有序消息等等。
  * 暂未使用Base协议中的identifier字段。此字段可用于消息确认标识。后期实现此服务在此类中实现。
  * Created by Nirvana on 2017/9/5.
  */
@@ -22,7 +26,12 @@ public abstract class DSTAgent extends AbstractAgent {
 
     private PackageLevel packageLevel = PackageLevel.NO_CONFIRM;
 
+    protected DSTSubscriber subscriber = new DSTSubscriber(this);
+
+    protected NamePublisher<String> publisher = new DefaultNamePublisher<>();
+
     /**
+     * DST协议:[CONNECT]
      * receive:[-username\n-password]
      * output:[-OK]
      */
@@ -49,6 +58,7 @@ public abstract class DSTAgent extends AbstractAgent {
     }
 
     /**
+     * DST协议:[SUBSCRIBE]
      * receive:[-topicName]
      * output:[-OK]
      */
@@ -69,17 +79,24 @@ public abstract class DSTAgent extends AbstractAgent {
         }
     }
 
+    /**
+     * DST协议:[PUSH_MESSAGE_ACK]
+     */
     @Override
     protected final void onPushMessageAck(Long identifier, ByteBuf data) {
         onPushMessageAck();
     }
 
+    /**
+     * DST协议:[EXACTLY_ONCE_MESSAGE_ACK]
+     */
     @Override
     protected final void onExactlyOnceMessageAck(Long identifier, ByteBuf data) {
         onExactlyOnceMessageAck();
     }
 
     /**
+     * DST协议:[UNSUBSCRIBE]
      * receive:[-topicName]
      * output:[-OK]
      */
@@ -101,7 +118,8 @@ public abstract class DSTAgent extends AbstractAgent {
     }
 
     /**
-     * receive:[-topicName-message]
+     * DST协议:[PUBLISH]
+     * receive:[-topicName\n-message]
      * output:[-OK]
      */
     @Override
@@ -125,11 +143,17 @@ public abstract class DSTAgent extends AbstractAgent {
         }
     }
 
+    /**
+     * DST协议:[PING]
+     */
     @Override
     protected final void onPing(Long identifier, ByteBuf data) {
         onPing();
     }
 
+    /**
+     * DST协议:[DISCONNECT]
+     */
     @Override
     protected final void onDisconnect(Long identifier, ByteBuf data) {
         onDisconnect();
@@ -158,46 +182,61 @@ public abstract class DSTAgent extends AbstractAgent {
      * 客户端第一次连接服务器：登陆，鉴权，自动订阅主题等等。
      *
      * @throws ConnectException 如果此过程中出现错误（例如鉴权错误），应当抛出此异常。此异常将会被捕获进行连接异常处理。
-     * @see #onConnectException(ConnectException)
+     * @see #onConnectException(ConnectException) 连接异常处理方法
      */
     protected abstract void onConnect(String username, String password) throws ConnectException;
 
     /**
      * 客户端订阅主题。
      */
-    protected abstract void onSubscribe(String topicName);
+    protected void onSubscribe(String topicName) {
+        subscriber.subscribe(topicName);
+    }
 
     /**
      * 客户端确认收到推送消息。
      */
-    protected abstract void onPushMessageAck();
+    protected void onPushMessageAck() {
+    }
 
     /**
      * 客户端确认收到有且仅一次推送消息。
      */
-    protected abstract void onExactlyOnceMessageAck();
+    protected void onExactlyOnceMessageAck() {
+    }
 
     /**
      * 客户端取消订阅。
      */
-    protected abstract void onUnsubscribe(String topicName);
+    protected void onUnsubscribe(String topicName) {
+        subscriber.unsubscribe(topicName);
+    }
 
     /**
      * 客户端发布消息。
      */
-    protected abstract void onPublish(String topicName, String message);
+    protected void onPublish(String topicName, String message) {
+        publisher.publish(topicName, message);
+    }
 
     /**
      * 客户端发送心跳。
      */
-    protected abstract void onPing();
+    protected void onPing() {
+    }
 
     /**
      * 客户端请求断开连接。
      */
-    protected abstract void onDisconnect();
+    protected void onDisconnect() {
+    }
 
     public void sendPackage(PackageType type, boolean retain, Long identifier, DSTPackage pkg) {
         sendPackage(new BasePackage(type, packageLevel, retain, identifier, new DSTPayloadPart(pkg)));
+    }
+
+    @Override
+    protected void doDestroy() throws DestroyFailedException {
+        subscriber.destroy();
     }
 }

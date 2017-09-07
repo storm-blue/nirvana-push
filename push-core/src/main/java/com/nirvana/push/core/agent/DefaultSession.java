@@ -1,5 +1,6 @@
 package com.nirvana.push.core.agent;
 
+import com.nirvana.push.core.AbstractDestroyable;
 import com.nirvana.push.core.DestroyFailedException;
 
 import java.util.HashMap;
@@ -9,9 +10,7 @@ import java.util.Map;
  * 默认的会话实现。
  * Created by Nirvana on 2017/9/6.
  */
-public class DefaultSession implements Session {
-
-    private volatile DestroyStatus destroyStatus = DestroyStatus.NOT_DESTROY;
+public class DefaultSession extends AbstractDestroyable implements Session {
 
     private long createTime = System.currentTimeMillis();
 
@@ -60,16 +59,8 @@ public class DefaultSession implements Session {
     }
 
     @Override
-    public void destroy() throws DestroyFailedException {
-        destroyStatus = DestroyStatus.DESTROYING;
-        if (agent.destroyStatus() != DestroyStatus.NOT_DESTROY) {
-            agent.destroy();
-        }
-        destroyStatus = DestroyStatus.DESTROYED;
+    protected void doDestroy() throws DestroyFailedException {
+        agent.destroy();
     }
 
-    @Override
-    public DestroyStatus destroyStatus() {
-        return destroyStatus;
-    }
 }

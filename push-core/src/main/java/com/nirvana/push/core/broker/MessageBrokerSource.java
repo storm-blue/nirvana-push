@@ -27,7 +27,7 @@ public class MessageBrokerSource {
      * @param name broker名称
      * @return 返回创建的Broker
      */
-    public MessageBroker create(String name) {
+    public MessageBroker createIfAbsent(String name) {
         MessageBroker broker = brokers.get(name);
         if (broker == null) {
             synchronized (this) {

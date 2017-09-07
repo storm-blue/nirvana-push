@@ -30,6 +30,10 @@ public abstract class MessageBroker implements MessageHall {
         subscribers.add(subscriber);
     }
 
+    public void removeSubscriber(Subscriber subscriber) {
+        subscribers.remove(subscriber);
+    }
+
     public Set<Subscriber> getSubscribers() {
         return subscribers;
     }

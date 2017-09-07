@@ -18,13 +18,13 @@ public class DefaultNamePublisher<T> implements NamePublisher<T> {
 
     @Override
     public void publish(String name, T msg) {
-        MessageBroker broker = brokerSource.create(name);
+        MessageBroker broker = brokerSource.createIfAbsent(name);
         broker.putMessage(msg);
     }
 
     @Override
     public void publish(String name, Collection<T> msg) {
-        MessageBroker broker = brokerSource.create(name);
+        MessageBroker broker = brokerSource.createIfAbsent(name);
         for (T m : msg) {
             broker.putMessage(m);
         }

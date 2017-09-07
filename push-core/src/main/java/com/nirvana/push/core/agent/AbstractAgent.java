@@ -1,5 +1,6 @@
 package com.nirvana.push.core.agent;
 
+import com.nirvana.push.core.AbstractDestroyable;
 import com.nirvana.push.protocol.BasePackage;
 import com.nirvana.push.protocol.PackageLevel;
 import io.netty.buffer.ByteBuf;
@@ -8,7 +9,7 @@ import io.netty.buffer.ByteBuf;
  * 代理类的骨架实现。
  * Created by Nirvana on 2017/8/7.
  */
-public abstract class AbstractAgent implements Agent {
+public abstract class AbstractAgent extends AbstractDestroyable implements Agent {
 
     @Override
     public final void onCommand(BasePackage pkg) {

@@ -3,17 +3,22 @@ package com.nirvana.push.client;
 import com.nirvana.push.protocol.BasePackage;
 import com.nirvana.push.protocol.PackageLevel;
 import com.nirvana.push.protocol.PackageType;
-import com.nirvana.push.protocol.UTF8StringPayloadPart;
+import com.nirvana.push.protocol.p2.DSTPackage;
+import com.nirvana.push.protocol.p2.DSTPayloadPart;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.Channel;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioSocketChannel;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.List;
 
 public class PushClient {
+
+    private static int connections = 10000;
+
+    private static List<Channel> channels = new ArrayList<>();
 
     public static void main(String[] args) throws Exception {
         EventLoopGroup group = new NioEventLoopGroup();
@@ -23,27 +28,21 @@ public class PushClient {
                     .channel(NioSocketChannel.class)
                     .handler(new PushClientInitializer());
 
-            // 连接服务端
-            String host = "127.0.0.1";
-            int port = 32222;
-            Channel ch = b.connect(host, port).sync().channel();
+            for (int i = 0; i < connections; i++) {
+                String host = "127.0.0.1";
+                int port = 32222;
+                Channel ch = b.connect(host, port).sync().channel();
+                channels.add(ch);
+                subscribe(ch, "default topic");
+            }
 
-            // 控制台输入
-            BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
+            System.out.println("连接数量：" + channels.size());
+
             while (true) {
-                String line = in.readLine();
-                if (line == null) {
-                    continue;
-                }
-            /*
-             * 向服务端发送在控制台输入的文本 并用"\r\n"结尾
-             * 之所以用\r\n结尾 是因为我们在handler中添加了 DelimiterBasedFrameDecoder 帧解码。
-             * 这个解码器是一个根据\n符号位分隔符的解码器。所以每条消息的最后必须加上\n否则无法识别和解码
-             * */
-
-                UTF8StringPayloadPart payload = new UTF8StringPayloadPart(line + "\r\n");
-                BasePackage basePackage = new BasePackage(PackageType.PUBLISH, PackageLevel.NO_CONFIRM, false, false, null, payload);
-                ch.writeAndFlush(basePackage.getByteBuf());
+                int random = (int) ((Math.random()) * (connections - 1));
+                System.out.println("客户端" + random + "开始发送包。");
+                publish(channels.get(random), "default topic", "用户" + random + " : " + System.currentTimeMillis());
+                Thread.sleep(5000);
             }
 
 
@@ -51,6 +50,18 @@ public class PushClient {
             // The connection is closed automatically on shutdown.
             group.shutdownGracefully();
         }
+    }
+
+    private static BasePackage getPackage(PackageType type, String[] values) {
+        return new BasePackage(type, PackageLevel.NO_CONFIRM, false, null, new DSTPayloadPart(new DSTPackage(values)));
+    }
+
+    private static void subscribe(Channel channel, String topicName) {
+        channel.writeAndFlush(getPackage(PackageType.SUBSCRIBE, new String[]{topicName}).getByteBuf());
+    }
+
+    private static void publish(Channel channel, String topicName, String message) {
+        channel.writeAndFlush(getPackage(PackageType.PUBLISH, new String[]{topicName, message}).getByteBuf());
     }
 
 }

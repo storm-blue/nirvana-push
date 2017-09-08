@@ -9,8 +9,6 @@ public class StartServer {
 
     /**
      * 启动服务
-     *
-     * @param args
      */
     public static void main(String[] args) {
         final PushServer pushServer = new PushServer();

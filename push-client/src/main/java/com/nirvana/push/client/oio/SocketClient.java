@@ -1,4 +1,4 @@
-package com.nirvana.push.client;
+package com.nirvana.push.client.oio;
 
 import com.nirvana.push.protocol.BasePackage;
 import com.nirvana.push.protocol.PackageLevel;
@@ -32,7 +32,7 @@ public class SocketClient {
         Socket socket = new Socket("127.0.0.1", 32222);
         OutputStream outputStream = socket.getOutputStream();
         UTF8StringPayloadPart payload = new UTF8StringPayloadPart("我是一只大老虎！");
-        BasePackage basePackage = new BasePackage(PackageType.PUBLISH, PackageLevel.NO_CONFIRM, false, false, null, payload);
+        BasePackage basePackage = new BasePackage(PackageType.PUBLISH, PackageLevel.NO_CONFIRM, false, null, payload);
         basePackage.output(outputStream);
         socket.close();
     }

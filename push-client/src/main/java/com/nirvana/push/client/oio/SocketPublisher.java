@@ -1,4 +1,4 @@
-package com.nirvana.push.client;
+package com.nirvana.push.client.oio;
 
 import com.nirvana.push.protocol.BasePackage;
 import com.nirvana.push.protocol.PackageLevel;
@@ -19,7 +19,7 @@ public class SocketPublisher {
         OutputStream outputStream = socket.getOutputStream();
 
         UTF8StringPayloadPart payload = new UTF8StringPayloadPart("我发布了一条消息！！\n");
-        BasePackage basePackage = new BasePackage(PackageType.PUBLISH, PackageLevel.NO_CONFIRM, false, false, null, payload);
+        BasePackage basePackage = new BasePackage(PackageType.PUBLISH, PackageLevel.NO_CONFIRM, false, null, payload);
         basePackage.output(outputStream);
 
         socket.close();

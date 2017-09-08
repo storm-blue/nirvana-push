@@ -1,4 +1,4 @@
-package com.nirvana.push.client;
+package com.nirvana.push.client.oio;
 
 import com.nirvana.push.protocol.BasePackage;
 import com.nirvana.push.protocol.PackageLevel;
@@ -20,7 +20,7 @@ public class SocketSubscriber {
         OutputStream outputStream = socket.getOutputStream();
 
         UTF8StringPayloadPart payload = new UTF8StringPayloadPart("!");
-        BasePackage basePackage = new BasePackage(PackageType.SUBSCRIBE, PackageLevel.NO_CONFIRM, false, false, null, payload);
+        BasePackage basePackage = new BasePackage(PackageType.SUBSCRIBE, PackageLevel.NO_CONFIRM, false, null, payload);
         basePackage.output(outputStream);
 
         InputStream inputStream = socket.getInputStream();

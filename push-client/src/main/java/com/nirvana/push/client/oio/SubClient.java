@@ -1,9 +1,12 @@
-package com.nirvana.push.client;
+package com.nirvana.push.client.oio;
 
+import com.nirvana.push.client.PushClientInitializer;
 import com.nirvana.push.protocol.BasePackage;
 import com.nirvana.push.protocol.PackageLevel;
 import com.nirvana.push.protocol.PackageType;
 import com.nirvana.push.protocol.UTF8StringPayloadPart;
+import com.nirvana.push.protocol.p2.DSTPackage;
+import com.nirvana.push.protocol.p2.DSTPayloadPart;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
@@ -30,8 +33,8 @@ public class SubClient {
             Channel ch = f.channel();
 
 
-            UTF8StringPayloadPart payload = new UTF8StringPayloadPart("订阅" + "\r\n");
-            BasePackage basePackage = new BasePackage(PackageType.SUBSCRIBE, PackageLevel.NO_CONFIRM, false, false, null, payload);
+            UTF8StringPayloadPart payload = new DSTPayloadPart(new DSTPackage(new String[]{"default topic"}));
+            BasePackage basePackage = new BasePackage(PackageType.SUBSCRIBE, PackageLevel.NO_CONFIRM, false, null, payload);
             ch.writeAndFlush(basePackage.getByteBuf());
 
             ChannelFuture fc = ch.closeFuture().sync();

@@ -23,17 +23,4 @@ public class PushServerHandler extends SimpleChannelInboundHandler<BasePackage> 
         Agent agent = ((AgentNioSocketChannel) ctx.channel()).getAgent();
         agent.onCommand(msg);
     }
-
-
-    /**
-     * 事件追踪，处理超时事件
-     */
-    @Override
-    public void userEventTriggered(ChannelHandlerContext ctx, Object evt) throws Exception {
-        if (evt instanceof IdleStateEvent) {
-            //直接关闭channel
-            ctx.channel().close();
-
-        }
-    }
 }

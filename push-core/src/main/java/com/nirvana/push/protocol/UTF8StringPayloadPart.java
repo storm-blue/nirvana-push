@@ -20,12 +20,12 @@ public class UTF8StringPayloadPart extends PayloadPart {
 
     public UTF8StringPayloadPart(String message) {
         this.message = message;
-        this.buf = Unpooled.copiedBuffer(message, CHARSET);
+        this.byteBuf = Unpooled.copiedBuffer(message, CHARSET);
     }
 
     public UTF8StringPayloadPart(ByteBuf buf) {
         this.message = buf.toString(CHARSET);
-        this.buf = buf;
+        this.byteBuf = buf;
     }
 
     public String getMessage() {

@@ -11,36 +11,29 @@ import java.nio.charset.Charset;
  */
 public class PayloadPart extends AbstractOutputable {
 
-    protected ByteBuf buf;
-
     protected PayloadPart() {
     }
 
     public PayloadPart(Outputable outputable) {
-        buf = outputable.getByteBuf();
+        byteBuf = outputable.getByteBuf();
     }
 
     public PayloadPart(ByteBuf buf) {
-        this.buf = buf;
+        this.byteBuf = buf;
     }
 
     public PayloadPart(byte[] bytes) {
-        buf = Unpooled.wrappedBuffer(bytes);
+        byteBuf = Unpooled.wrappedBuffer(bytes);
     }
 
     public PayloadPart(byte[] bytes, int offset, int length) {
-        buf = Unpooled.wrappedBuffer(bytes, offset, length);
-    }
-
-    @Override
-    public ByteBuf getByteBuf() {
-        return buf;
+        byteBuf = Unpooled.wrappedBuffer(bytes, offset, length);
     }
 
     @Override
     public String toString() {
         return "PayloadPart{" +
-                "buf=" + buf.toString(Charset.defaultCharset()) +
+                "buf=" + byteBuf.toString(Charset.defaultCharset()) +
                 '}';
     }
 }

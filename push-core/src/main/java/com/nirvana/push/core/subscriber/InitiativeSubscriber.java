@@ -6,6 +6,7 @@ import com.nirvana.push.core.broker.MessageBroker;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * 主动订阅主题的订阅者。
@@ -15,6 +16,7 @@ public abstract class InitiativeSubscriber<T> extends AbstractDestroyable implem
 
     /**
      * 订阅的所有主题。
+     * 此结构是否需要做线程安全？
      */
     protected Set<MessageBroker> brokers = new HashSet<>();
 

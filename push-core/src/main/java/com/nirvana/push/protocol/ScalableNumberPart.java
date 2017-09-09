@@ -4,6 +4,8 @@ import com.nirvana.push.protocol.exception.ScalableNumStateException;
 import com.nirvana.push.protocol.exception.ScalableNumCreateException;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * 可变字节编码。根据数值的不同会编码为不同长度的字节数组。最大数值为：72,057,594,037,927,935
@@ -11,6 +13,8 @@ import io.netty.buffer.Unpooled;
  * Created by Nirvana on 2017/8/9.
  */
 public class ScalableNumberPart extends AbstractOutputable {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(ScalableNumberPart.class);
 
     //最大字节数
     private static final int LONG_INT_MAX_BYTES = 8;
@@ -20,8 +24,6 @@ public class ScalableNumberPart extends AbstractOutputable {
 
     /*可变字节的值*/
     private long value = 0;
-
-    private ByteBuf buf;
 
     private int maxBytes = LONG_INT_MAX_BYTES;
 
@@ -56,7 +58,7 @@ public class ScalableNumberPart extends AbstractOutputable {
             i++;
         }
 
-        buf = Unpooled.wrappedBuffer(bytes, 0, i);
+        byteBuf = Unpooled.wrappedBuffer(bytes, 0, i);
         creationFinished = true;
     }
 
@@ -94,7 +96,7 @@ public class ScalableNumberPart extends AbstractOutputable {
 
         //如果遇到字节最高位为0，则为终止字节，创建工作完成。
         if ((b & (byte) 128) == 0) {
-            buf = Unpooled.wrappedBuffer(bytes, 0, index);
+            byteBuf = Unpooled.wrappedBuffer(bytes, 0, index);
             creationFinished = true;
             return true;
         }
@@ -122,7 +124,7 @@ public class ScalableNumberPart extends AbstractOutputable {
         if (!creationFinished) {
             throw new ScalableNumStateException("此变长字节对象尚未创建完成。");
         }
-        return buf;
+        return super.getByteBuf();
     }
 
     @Override

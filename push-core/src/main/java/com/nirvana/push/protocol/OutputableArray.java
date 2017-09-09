@@ -1,6 +1,5 @@
 package com.nirvana.push.protocol;
 
-import io.netty.buffer.ByteBuf;
 import io.netty.buffer.CompositeByteBuf;
 import io.netty.buffer.Unpooled;
 
@@ -19,18 +18,19 @@ public class OutputableArray extends AbstractOutputable {
     /**
      * 组合ByteBuf.
      */
-    private CompositeByteBuf byteBuf = Unpooled.compositeBuffer();
-
     public OutputableArray() {
+        byteBuf = Unpooled.compositeBuffer();
     }
 
     public OutputableArray(Outputable... outputables) {
+        this();
         for (Outputable outputable : outputables) {
             addElement(outputable);
         }
     }
 
     public OutputableArray(Collection<Outputable> outputables) {
+        this();
         for (Outputable outputable : outputables) {
             addElement(outputable);
         }
@@ -40,9 +40,10 @@ public class OutputableArray extends AbstractOutputable {
      * 增加组件。
      */
     protected void addElement(Outputable element) {
+        CompositeByteBuf buf = (CompositeByteBuf) byteBuf;
         if (element != null) {
             elements.add(element);
-            byteBuf.addComponent(true, element.getByteBuf());
+            buf.addComponent(true, element.getByteBuf());
         }
     }
 
@@ -66,12 +67,7 @@ public class OutputableArray extends AbstractOutputable {
      * 清除组件。
      */
     public void clear() {
+        ((CompositeByteBuf) byteBuf).removeComponents(0, elements.size());
         elements.clear();
-        byteBuf.clear();
-    }
-
-    @Override
-    public ByteBuf getByteBuf() {
-        return byteBuf;
     }
 }

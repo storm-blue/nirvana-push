@@ -6,6 +6,7 @@ import com.nirvana.push.utils.Assert;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * topic代理人。负责维持
@@ -19,7 +20,10 @@ public abstract class MessageBroker implements MessageHall {
      */
     private final Object identifier;
 
-    private Set<Subscriber> subscribers = new HashSet<>();
+    /**
+     * 线程安全的订阅者集合。
+     */
+    private Set<Subscriber> subscribers = new ConcurrentHashMap<Subscriber, Boolean>().keySet(true);
 
     public MessageBroker(Object identifier) {
         Assert.notNull(identifier, "标识符不能为空");

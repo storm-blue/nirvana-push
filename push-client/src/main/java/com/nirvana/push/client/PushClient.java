@@ -16,7 +16,7 @@ import java.util.List;
 
 public class PushClient {
 
-    private static int connections = 1000;
+    private static int connections = 10000;
 
     private static List<Channel> channels = new ArrayList<>();
 
@@ -45,7 +45,7 @@ public class PushClient {
                 int random = (int) ((Math.random()) * (connections - 1));
                 System.out.println("客户端" + random + "开始发送包。期望推送数：" + connections * i);
                 publish(channels.get(random), "default topic", "用户" + random + " : " + System.currentTimeMillis());
-                Thread.sleep(10);
+                Thread.sleep(800);
             }
 
 

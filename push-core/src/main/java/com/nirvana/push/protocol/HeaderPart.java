@@ -13,8 +13,6 @@ public class HeaderPart extends AbstractOutputable {
 
     public static final int HEADER_PART_SIZE = 1;
 
-    private ByteBuf data;
-
     //包类型
     private PackageType packageType;
 
@@ -42,7 +40,7 @@ public class HeaderPart extends AbstractOutputable {
         if (buf.readableBytes() != HEADER_PART_SIZE) {
             throw new HeaderParseException("消息头部分长度必须为1");
         }
-        this.data = buf;
+        this.byteBuf = buf;
         byte b = buf.getByte(0);
 
         packageType = PackageType.get(BitRuler.r(b, 5, 8));
@@ -62,7 +60,7 @@ public class HeaderPart extends AbstractOutputable {
 
     public HeaderPart(PackageType type, PackageLevel level, boolean identifiable, boolean retain) {
         byte b = (byte) (type.getCode() << 4 | (identifiable ? 1 : 0) << 3 | (level.getCode() << 1) | (retain ? 1 : 0));
-        data = Unpooled.wrappedBuffer(new byte[]{b});
+        byteBuf = Unpooled.wrappedBuffer(new byte[]{b});
         this.packageType = type;
         this.packageLevel = level;
         this.identifiable = identifiable;
@@ -83,11 +81,6 @@ public class HeaderPart extends AbstractOutputable {
 
     public boolean isIdentifiable() {
         return identifiable;
-    }
-
-    @Override
-    public ByteBuf getByteBuf() {
-        return data;
     }
 
     @Override

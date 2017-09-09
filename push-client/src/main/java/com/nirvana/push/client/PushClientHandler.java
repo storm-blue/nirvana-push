@@ -18,5 +18,6 @@ public class PushClientHandler extends SimpleChannelInboundHandler<BasePackage> 
             String message = dstPackage.get(0);
             //System.out.println("receive : " + message);
         }
+        msg.release();
     }
 }

@@ -22,5 +22,6 @@ public class PushServerHandler extends SimpleChannelInboundHandler<BasePackage> 
         LOGGER.debug("开始处理接收的协议包：{}", msg);
         Agent agent = ((AgentNioSocketChannel) ctx.channel()).getAgent();
         agent.onCommand(msg);
+        msg.release();
     }
 }

@@ -12,6 +12,10 @@ import java.io.OutputStream;
  */
 public abstract class AbstractOutputable implements Outputable, Outputter {
 
+    protected ByteBuf byteBuf;
+
+    protected boolean released = false;
+
     @Override
     public void output(ChannelHandlerContext context) {
         context.write(getByteBuf());
@@ -28,5 +32,23 @@ public abstract class AbstractOutputable implements Outputable, Outputter {
 
     public int getSize() {
         return getByteBuf().readableBytes();
+    }
+
+    /**
+     * 使用完之后需要手动释放。否则有可能会造成内存泄漏。
+     */
+    public void release() {
+        if (byteBuf != null && !released) {
+            byteBuf.release();
+            released = true;
+        }
+    }
+
+    @Override
+    public ByteBuf getByteBuf() {
+        if (released) {
+            throw new IllegalStateException("此对象已经释放，无法获取");
+        }
+        return byteBuf;
     }
 }

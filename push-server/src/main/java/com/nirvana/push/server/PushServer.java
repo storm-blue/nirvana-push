@@ -23,8 +23,6 @@ public class PushServer {
     private EventLoopGroup bossGroup;
 
     private EventLoopGroup workerGroup;
-    //业务线程，因为处理业务，有可能使导致当前channel所在线程阻塞
-    private EventLoopGroup busyGroup;
 
     PushServer() {
     }
@@ -36,9 +34,8 @@ public class PushServer {
 
     ChannelFuture startServer() {
 
-        bossGroup = new NioEventLoopGroup();
-        workerGroup = new NioEventLoopGroup();
-        busyGroup = new NioEventLoopGroup();
+        bossGroup = new NioEventLoopGroup(1);
+        workerGroup = new NioEventLoopGroup(3);
 
         ServerBootstrap b = new ServerBootstrap();
         b.group(bossGroup, workerGroup);
@@ -52,7 +49,8 @@ public class PushServer {
                 // 字符串解码 和 编码
                 pipeline.addLast("encoder", new StringEncoder());
                 // 自己的逻辑Handler
-                pipeline.addLast(busyGroup, "handler", new PushServerHandler());
+                pipeline.addLast("handler", new PushServerHandler());
+                pipeline.addLast("statistics", new StatisticsHandler());
             }
         });
 
@@ -76,7 +74,6 @@ public class PushServer {
         }
         bossGroup.shutdownGracefully();
         workerGroup.shutdownGracefully();
-        busyGroup.shutdownGracefully();
     }
 
 }

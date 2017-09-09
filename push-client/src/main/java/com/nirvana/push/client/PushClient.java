@@ -16,7 +16,7 @@ import java.util.List;
 
 public class PushClient {
 
-    private static int connections = 10000;
+    private static int connections = 1000;
 
     private static List<Channel> channels = new ArrayList<>();
 
@@ -34,15 +34,18 @@ public class PushClient {
                 Channel ch = b.connect(host, port).sync().channel();
                 channels.add(ch);
                 subscribe(ch, "default topic");
+                if ((i + 1) % (connections / 20) == 0) {
+                    System.out.println("初始化完成：" + (i + 1) * 100 / connections + "%");
+                }
             }
 
             System.out.println("连接数量：" + channels.size());
 
-            while (true) {
+            for (int i = 1; ; i++) {
                 int random = (int) ((Math.random()) * (connections - 1));
-                System.out.println("客户端" + random + "开始发送包。");
+                System.out.println("客户端" + random + "开始发送包。期望推送数：" + connections * i);
                 publish(channels.get(random), "default topic", "用户" + random + " : " + System.currentTimeMillis());
-                Thread.sleep(5000);
+                Thread.sleep(10);
             }
 
 

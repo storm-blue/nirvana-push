@@ -16,7 +16,7 @@ public class PushClientHandler extends SimpleChannelInboundHandler<BasePackage> 
             String content = msg.getPayload().getByteBuf().toString(Charset.forName("UTF-8"));
             DSTPackage dstPackage = new DSTPackage(content);
             String message = dstPackage.get(0);
-            System.out.println("receive : " + message);
+            //System.out.println("receive : " + message);
         }
     }
 }

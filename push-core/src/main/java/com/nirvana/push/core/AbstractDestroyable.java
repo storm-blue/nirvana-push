@@ -11,6 +11,7 @@ public abstract class AbstractDestroyable implements Destroyable {
 
     /**
      * 判断是否未销毁，如果状态为未销毁，则开始销毁动作。
+     * 此处通过状态避免两个对象的destroy()方法需要互相调用时引发的问题。
      */
     @Override
     public void destroy() throws DestroyFailedException {

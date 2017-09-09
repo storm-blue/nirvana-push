@@ -19,7 +19,7 @@ public class PushServerHandler extends SimpleChannelInboundHandler<BasePackage> 
 
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, BasePackage msg) throws Exception {
-        LOGGER.info("开始处理接收的协议包：{}", msg);
+        LOGGER.debug("开始处理接收的协议包：{}", msg);
         Agent agent = ((AgentNioSocketChannel) ctx.channel()).getAgent();
         agent.onCommand(msg);
     }

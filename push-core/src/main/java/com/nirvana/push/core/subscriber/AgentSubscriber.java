@@ -1,23 +1,21 @@
 package com.nirvana.push.core.subscriber;
 
-import com.nirvana.push.core.agent.DSTAgent;
+import com.nirvana.push.core.agent.L2PAgentAdapter;
 import com.nirvana.push.core.broker.MessageBroker;
 import com.nirvana.push.core.broker.MessageBrokerSource;
-import com.nirvana.push.protocol.PackageType;
-import com.nirvana.push.protocol.p2.DSTPackage;
 
 /**
  * DST协议订阅者实现。
  * Created by Nirvana on 2017/9/7.
  */
-public class DSTSubscriber extends InitiativeSubscriber<String> {
+public class AgentSubscriber extends InitiativeSubscriber<String> {
 
     private MessageBrokerSource brokerSource = MessageBrokerSource.getSource();
 
     //DST协议代理类实现。
-    private DSTAgent agent;
+    private L2PAgentAdapter agent;
 
-    public DSTSubscriber(DSTAgent agent) {
+    public AgentSubscriber(L2PAgentAdapter agent) {
         this.agent = agent;
     }
 
@@ -38,13 +36,11 @@ public class DSTSubscriber extends InitiativeSubscriber<String> {
     }
 
     /**
-     * 发送DST协议消息。
-     * TODO 更精确的消息级别控制，identifier字段控制。
+     * 通过Agent向外部推送消息。
      */
     @Override
     public void onMessage(String msg) {
-        DSTPackage dstPackage = new DSTPackage(new String[]{msg});
-        //agent.sendPackage(PackageType.PUSH_MESSAGE, false, null, dstPackage);
+        agent.pushMessage(msg);
     }
 
 }

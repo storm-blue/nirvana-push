@@ -2,7 +2,7 @@ package com.nirvana.push.client;
 
 import com.nirvana.push.protocol.BasePackage;
 import com.nirvana.push.protocol.PackageType;
-import com.nirvana.push.protocol.p2.DSTPackage;
+import com.nirvana.push.protocol.l2.DSTPackage;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import org.slf4j.Logger;

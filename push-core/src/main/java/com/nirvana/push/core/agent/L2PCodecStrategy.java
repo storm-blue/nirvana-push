@@ -1,8 +1,9 @@
 package com.nirvana.push.core.agent;
 
-import com.nirvana.push.protocol.p2.L2Element;
-import com.nirvana.push.protocol.p2.L2Package;
+import com.nirvana.push.protocol.l2.L2Package;
 import io.netty.buffer.ByteBuf;
+
+import java.util.Map;
 
 /**
  * 二级协议编解码策略。
@@ -14,8 +15,6 @@ public interface L2PCodecStrategy {
 
     L2Package encodeValues(Object... values);
 
-    L2Package getPackage(L2Element... elements);
-
-    L2Element getElement(String key, Object value);
+    L2Package encodeValues(Map<String, Object> values);
 
 }

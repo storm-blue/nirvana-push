@@ -1,4 +1,4 @@
-package com.nirvana.push.protocol.p2;
+package com.nirvana.push.protocol.l2;
 
 import com.nirvana.push.protocol.UTF8StringPayloadPart;
 

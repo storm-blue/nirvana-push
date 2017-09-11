@@ -1,4 +1,4 @@
-package com.nirvana.push.protocol.p2;
+package com.nirvana.push.protocol.l2;
 
 /**
  * 二级协议元素。

@@ -1,6 +1,7 @@
 package com.nirvana.push.protocol;
 
 import com.nirvana.push.utils.Assert;
+import io.netty.buffer.ByteBuf;
 
 /**
  * 基础协议包。
@@ -21,6 +22,10 @@ public class BasePackage extends OutputableArray {
     private ScalableNumberPart identifier;
 
     private final PayloadPart payload;
+
+    public BasePackage(PackageType type, PackageLevel level, boolean retain, Long identifier, ByteBuf payload) {
+        this(type, level, retain, identifier, new PayloadPart(payload));
+    }
 
     public BasePackage(PackageType type, PackageLevel level, boolean retain, Long identifier, PayloadPart payload) {
 

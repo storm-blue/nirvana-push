@@ -1,4 +1,4 @@
-package com.nirvana.push.protocol.p2;
+package com.nirvana.push.protocol.l2;
 
 /*
 * 二级协议采用纯文本协议。Line Delimiter Base Second Level Text Protocol.简写做[DST]。

@@ -7,7 +7,7 @@ import com.nirvana.push.core.agent.exception.ConnectException;
  * SessionAgent.java.
  * Created by Nirvana on 2017/9/6.
  */
-public abstract class SessionAgent extends DSTAgent {
+public abstract class SessionAgent extends L2PAgentAdapter {
 
     private Session session = new DefaultSession(this);
 

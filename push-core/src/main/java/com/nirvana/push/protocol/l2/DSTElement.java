@@ -1,4 +1,4 @@
-package com.nirvana.push.protocol.p2;
+package com.nirvana.push.protocol.l2;
 
 import com.nirvana.push.protocol.exception.ProtocolException;
 
@@ -80,7 +80,7 @@ public class DSTElement implements L2Element {
     /**
      * 获取元素原始文本。
      */
-    public String content() {
+    String content() {
         return content;
     }
 

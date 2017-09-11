@@ -4,11 +4,13 @@ import com.nirvana.push.core.DestroyFailedException;
 import com.nirvana.push.core.agent.exception.ConnectException;
 import com.nirvana.push.core.publisher.DefaultNamePublisher;
 import com.nirvana.push.core.publisher.NamePublisher;
-import com.nirvana.push.core.subscriber.DSTSubscriber;
+import com.nirvana.push.core.subscriber.AgentSubscriber;
 import com.nirvana.push.protocol.*;
-import com.nirvana.push.protocol.p2.L2Package;
-import com.nirvana.push.protocol.p2.L2ProtocolException;
+import com.nirvana.push.protocol.l2.L2Package;
+import com.nirvana.push.protocol.l2.L2ProtocolException;
 import io.netty.buffer.ByteBuf;
+
+import java.util.List;
 
 
 /**
@@ -16,15 +18,16 @@ import io.netty.buffer.ByteBuf;
  * 暂未使用Base协议中的identifier字段。此字段可用于消息确认标识。后期实现此服务在此类中实现。
  * Created by Nirvana on 2017/9/5.
  */
-public abstract class DSTAgent extends AbstractAgent {
+public abstract class L2PAgentAdapter extends AbstractAgent {
 
     private PackageLevel packageLevel = PackageLevel.NO_CONFIRM;
 
-    protected DSTSubscriber subscriber = new DSTSubscriber(this);
+    protected AgentSubscriber subscriber = new AgentSubscriber(this);
 
     protected NamePublisher<String> publisher = new DefaultNamePublisher<>();
 
-    private L2PCodecStrategy l2PCodecStrategy = new DSTCodecStrategy();
+    //TODO 通过strategy控制消息服务级别，消息identifier等行为。
+    private L2PCodecStrategy l2PCodecStrategy = DSTCodecStrategy.getStrategy();
 
     /**
      * DST协议:[CONNECT]
@@ -225,5 +228,18 @@ public abstract class DSTAgent extends AbstractAgent {
     @Override
     protected void doDestroy() throws DestroyFailedException {
         subscriber.destroy();
+    }
+
+    /**
+     * 向客户端推送推送消息。
+     */
+    public void pushMessage(String msg) {
+        sendPackage(new BasePackage(PackageType.PUSH_MESSAGE, packageLevel, false, null, l2PCodecStrategy.encodeValues(msg).getByteBuf()));
+    }
+
+    /**
+     * 批量向客户端推送推送消息。
+     */
+    public void pushMessage(List<String> msg) {
     }
 }

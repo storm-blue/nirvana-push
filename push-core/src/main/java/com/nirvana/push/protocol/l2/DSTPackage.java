@@ -1,8 +1,7 @@
-package com.nirvana.push.protocol.p2;
+package com.nirvana.push.protocol.l2;
 
 import com.nirvana.push.protocol.AbstractOutputable;
 import com.nirvana.push.protocol.exception.ProtocolException;
-import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 
 import java.nio.charset.Charset;
@@ -36,13 +35,32 @@ public class DSTPackage extends AbstractOutputable implements L2Package {
     /**
      * 从Values构建一个DST 协议包.
      */
-    public DSTPackage(String[] values) {
+    public DSTPackage(Object[] values) {
         StringBuilder contentBuilder = new StringBuilder();
-        for (String value : values) {
-            DSTElement element = new DSTElement(value);
+        for (Object value : values) {
+            DSTElement element = new DSTElement(value.toString());
             elements.add(element);
             contentBuilder.append(element.content()).append('\n');
             this.values.put(String.valueOf(DSTDefinition.SEPARATOR) + (elements.size() - 1), element);
+        }
+        content = contentBuilder.toString();
+        byteBuf = Unpooled.copiedBuffer(content, Charset.forName("UTF-8"));
+    }
+
+    /**
+     * 从Elements构建一个DST协议包.
+     */
+    public DSTPackage(Map<String, Object> values) {
+        StringBuilder contentBuilder = new StringBuilder();
+        for (String key : values.keySet()) {
+            DSTElement element = new DSTElement(key, values.get(key).toString());
+            this.elements.add(element);
+            contentBuilder.append(element.content()).append('\n');
+            if (element.plain()) {
+                values.put(String.valueOf(DSTDefinition.SEPARATOR) + (this.elements.size() - 1), element);
+            } else {
+                values.put(element.getKey(), element);
+            }
         }
         content = contentBuilder.toString();
         byteBuf = Unpooled.copiedBuffer(content, Charset.forName("UTF-8"));

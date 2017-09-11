@@ -7,18 +7,19 @@ import com.nirvana.push.protocol.p2.DSTPackage;
 import com.nirvana.push.protocol.p2.DSTPayloadPart;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.Channel;
+import io.netty.channel.ChannelId;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioSocketChannel;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class PushClient {
 
-    private static int connections = 10000;
+    private static int INIT_CONNECTIONS = 10000;
 
-    private static List<Channel> channels = new ArrayList<>();
+    static Map<ChannelId, Channel> channels = new ConcurrentHashMap<>();
 
     public static void main(String[] args) throws Exception {
         EventLoopGroup group = new NioEventLoopGroup();
@@ -28,24 +29,26 @@ public class PushClient {
                     .channel(NioSocketChannel.class)
                     .handler(new PushClientInitializer());
 
-            for (int i = 0; i < connections; i++) {
+            for (int i = 0; i < INIT_CONNECTIONS; i++) {
                 String host = "127.0.0.1";
                 int port = 32222;
                 Channel ch = b.connect(host, port).sync().channel();
-                channels.add(ch);
+                ch.id();
+                channels.put(ch.id(), ch);
                 subscribe(ch, "default topic");
-                if ((i + 1) % (connections / 20) == 0) {
-                    System.out.println("初始化完成：" + (i + 1) * 100 / connections + "%");
+                if ((i + 1) % (INIT_CONNECTIONS / 20) == 0) {
+                    System.out.println("初始化完成：" + (i + 1) * 100 / INIT_CONNECTIONS + "%");
                 }
             }
 
             System.out.println("连接数量：" + channels.size());
 
             for (int i = 1; ; i++) {
-                int random = (int) ((Math.random()) * (connections - 1));
-                System.out.println("客户端" + random + "开始发送包。期望推送数：" + connections * i);
-                publish(channels.get(random), "default topic", "用户" + random + " : " + System.currentTimeMillis());
-                Thread.sleep(800);
+                for (ChannelId id : channels.keySet()) {
+                    System.out.println("客户端" + id + "开始发送包。期望推送数：" + channels.size() * i);
+                    publish(channels.get(id), "default topic", "用户" + id + " : " + System.currentTimeMillis());
+                    Thread.sleep(200);
+                }
             }
 
 

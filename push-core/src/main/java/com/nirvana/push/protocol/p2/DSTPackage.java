@@ -1,14 +1,18 @@
 package com.nirvana.push.protocol.p2;
 
+import com.nirvana.push.protocol.AbstractOutputable;
 import com.nirvana.push.protocol.exception.ProtocolException;
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
+import java.nio.charset.Charset;
 import java.util.*;
 
 /**
  * DST文本协议实现。
  * Created by Nirvana on 2017/9/4.
  */
-public class DSTPackage {
+public class DSTPackage extends AbstractOutputable implements L2Package {
 
     /*协议包原始文本*/
     private String content;
@@ -41,6 +45,7 @@ public class DSTPackage {
             this.values.put(String.valueOf(DSTDefinition.SEPARATOR) + (elements.size() - 1), element);
         }
         content = contentBuilder.toString();
+        byteBuf = Unpooled.copiedBuffer(content, Charset.forName("UTF-8"));
     }
 
     /**
@@ -58,6 +63,7 @@ public class DSTPackage {
             }
         }
         content = contentBuilder.toString();
+        byteBuf = Unpooled.copiedBuffer(content, Charset.forName("UTF-8"));
     }
 
     /**
@@ -65,6 +71,7 @@ public class DSTPackage {
      */
     public DSTPackage(String data) {
         this.content = data;
+        byteBuf = Unpooled.copiedBuffer(content, Charset.forName("UTF-8"));
 
         int index = 0;
         boolean crossSeparator = false;
@@ -132,6 +139,7 @@ public class DSTPackage {
     /**
      * DSTPackage中的key-value形式的元素，通过key获取value值
      */
+    @Override
     public String get(String key) {
         if (key.contains(String.valueOf(DSTDefinition.SEPARATOR))) {
             throw new ProtocolException("Key值不合法");
@@ -146,6 +154,7 @@ public class DSTPackage {
      *
      * @return 如果目标index无简单DSTElement元素，返回null.否则返回值
      */
+    @Override
     public String get(int index) {
         DSTElement element = values.get(String.valueOf(DSTDefinition.SEPARATOR) + index);
         return element == null ? null : element.getValue();
@@ -154,6 +163,7 @@ public class DSTPackage {
     /**
      * 根据Index获取DSTElement。
      */
+    @Override
     public DSTElement getElement(int index) {
         return elements.get(index);
     }
@@ -161,6 +171,7 @@ public class DSTPackage {
     /**
      * DST协议包中元素数量。
      */
+    @Override
     public int size() {
         return elements.size();
     }

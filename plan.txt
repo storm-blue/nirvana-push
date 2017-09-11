@@ -15,6 +15,7 @@
 
 扩展性：
     支持水平扩展。
+    移除协议，核心包等对netty的依赖。
 
 其他：
     NoStackException的fillInStackTrace()方法可配置。

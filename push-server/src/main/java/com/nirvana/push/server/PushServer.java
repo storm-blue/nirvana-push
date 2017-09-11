@@ -32,6 +32,7 @@ public class PushServer {
     }
 
 
+    //TODO 池化Allocator,优化内存控制。option()方法。
     ChannelFuture startServer() {
 
         bossGroup = new NioEventLoopGroup();

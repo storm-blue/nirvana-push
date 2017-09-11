@@ -24,4 +24,10 @@ public class PushServerHandler extends SimpleChannelInboundHandler<BasePackage> 
         agent.onCommand(msg);
         msg.release();
     }
+
+    @Override
+    public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
+        LOGGER.info("遇到IO异常，关闭连接。");
+        ctx.close();
+    }
 }

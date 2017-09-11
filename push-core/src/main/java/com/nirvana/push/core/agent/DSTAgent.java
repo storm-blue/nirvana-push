@@ -5,17 +5,11 @@ import com.nirvana.push.core.agent.exception.ConnectException;
 import com.nirvana.push.core.publisher.DefaultNamePublisher;
 import com.nirvana.push.core.publisher.NamePublisher;
 import com.nirvana.push.core.subscriber.DSTSubscriber;
-import com.nirvana.push.protocol.BasePackage;
-import com.nirvana.push.protocol.PackageLevel;
-import com.nirvana.push.protocol.PackageType;
-import com.nirvana.push.protocol.UTF8StringPayloadPart;
-import com.nirvana.push.protocol.exception.ProtocolException;
-import com.nirvana.push.protocol.p2.DSTElement;
-import com.nirvana.push.protocol.p2.DSTPackage;
-import com.nirvana.push.protocol.p2.DSTPayloadPart;
+import com.nirvana.push.protocol.*;
+import com.nirvana.push.protocol.p2.L2Package;
+import com.nirvana.push.protocol.p2.L2ProtocolException;
 import io.netty.buffer.ByteBuf;
 
-import java.nio.charset.Charset;
 
 /**
  * DST协议的实现。TODO:精准的消息级别，有序消息等等。
@@ -30,6 +24,8 @@ public abstract class DSTAgent extends AbstractAgent {
 
     protected NamePublisher<String> publisher = new DefaultNamePublisher<>();
 
+    private L2PCodecStrategy l2PCodecStrategy = new DSTCodecStrategy();
+
     /**
      * DST协议:[CONNECT]
      * receive:[-username\n-password]
@@ -38,19 +34,19 @@ public abstract class DSTAgent extends AbstractAgent {
     @Override
     protected final void onConnect(Long identifier, ByteBuf data) {
         try {
-            DSTPackage pkg = getDSTPackage(data);
+            L2Package pkg = l2PCodecStrategy.decode(data);
             if (pkg.size() != 2) {
-                throw new ProtocolException();
+                throw new L2ProtocolException();
             }
-            String username = pkg.get(0);
-            String password = pkg.get(1);
+            String username = (String) pkg.get(0);
+            String password = (String) pkg.get(1);
             if (username == null || password == null) {
-                throw new ProtocolException();
+                throw new L2ProtocolException();
             }
             onConnect(username, password);
-            DSTPackage ack = new DSTPackage(new DSTElement("OK"));
-            sendPackage(new BasePackage(PackageType.CONNECT_ACK, PackageLevel.NO_CONFIRM, false, identifier, new UTF8StringPayloadPart(ack.getContent())));
-        } catch (ProtocolException e) {
+            L2Package ack = l2PCodecStrategy.encodeValues("OK");
+            sendPackage(new BasePackage(PackageType.CONNECT_ACK, PackageLevel.NO_CONFIRM, false, identifier, new PayloadPart(ack.getByteBuf())));
+        } catch (L2ProtocolException e) {
             onProtocolException(e);
         } catch (ConnectException e) {
             onConnectException(e);
@@ -65,16 +61,16 @@ public abstract class DSTAgent extends AbstractAgent {
     @Override
     protected final void onSubscribe(Long identifier, ByteBuf data) {
         try {
-            DSTPackage pkg = getDSTPackage(data);
+            L2Package pkg = l2PCodecStrategy.decode(data);
             if (pkg.size() != 1) {
-                throw new ProtocolException();
+                throw new L2ProtocolException();
             }
-            String topicName = pkg.get(0);
+            String topicName = (String) pkg.get(0);
             if (topicName == null) {
-                throw new ProtocolException();
+                throw new L2ProtocolException();
             }
             onSubscribe(topicName);
-        } catch (ProtocolException e) {
+        } catch (L2ProtocolException e) {
             onProtocolException(e);
         }
     }
@@ -103,16 +99,16 @@ public abstract class DSTAgent extends AbstractAgent {
     @Override
     protected final void onUnsubscribe(Long identifier, ByteBuf data) {
         try {
-            DSTPackage pkg = getDSTPackage(data);
+            L2Package pkg = l2PCodecStrategy.decode(data);
             if (pkg.size() != 1) {
-                throw new ProtocolException();
+                throw new L2ProtocolException();
             }
-            String topicName = pkg.get(0);
+            String topicName = (String) pkg.get(0);
             if (topicName == null) {
-                throw new ProtocolException();
+                throw new L2ProtocolException();
             }
             onUnsubscribe(topicName);
-        } catch (ProtocolException e) {
+        } catch (L2ProtocolException e) {
             onProtocolException(e);
         }
     }
@@ -125,20 +121,20 @@ public abstract class DSTAgent extends AbstractAgent {
     @Override
     protected final void onPublish(PackageLevel level, boolean retain, Long identifier, ByteBuf data) {
         try {
-            DSTPackage pkg = getDSTPackage(data);
+            L2Package pkg = l2PCodecStrategy.decode(data);
             if (pkg.size() != 2) {
-                throw new ProtocolException();
+                throw new L2ProtocolException();
             }
-            String topicName = pkg.get(0);
+            String topicName = (String) pkg.get(0);
             if (topicName == null) {
-                throw new ProtocolException();
+                throw new L2ProtocolException();
             }
-            String message = pkg.get(1);
+            String message = (String) pkg.get(1);
             if (message == null) {
-                throw new ProtocolException();
+                throw new L2ProtocolException();
             }
             onPublish(topicName, message);
-        } catch (ProtocolException e) {
+        } catch (L2ProtocolException e) {
             onProtocolException(e);
         }
     }
@@ -159,15 +155,10 @@ public abstract class DSTAgent extends AbstractAgent {
         onDisconnect();
     }
 
-    private DSTPackage getDSTPackage(ByteBuf buf) {
-        String content = buf.toString(Charset.forName("UTF-8"));
-        return new DSTPackage(content);
-    }
-
     /**
      * 协议解析错误时的处理。子类可覆盖此方法。
      */
-    protected void onProtocolException(ProtocolException e) {
+    protected void onProtocolException(L2ProtocolException e) {
         disconnect();
     }
 
@@ -229,10 +220,6 @@ public abstract class DSTAgent extends AbstractAgent {
      * 客户端请求断开连接。
      */
     protected void onDisconnect() {
-    }
-
-    public void sendPackage(PackageType type, boolean retain, Long identifier, DSTPackage pkg) {
-        sendPackage(new BasePackage(type, packageLevel, retain, identifier, new DSTPayloadPart(pkg)));
     }
 
     @Override

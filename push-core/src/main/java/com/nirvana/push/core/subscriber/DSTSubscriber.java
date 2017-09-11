@@ -44,7 +44,7 @@ public class DSTSubscriber extends InitiativeSubscriber<String> {
     @Override
     public void onMessage(String msg) {
         DSTPackage dstPackage = new DSTPackage(new String[]{msg});
-        agent.sendPackage(PackageType.PUSH_MESSAGE, false, null, dstPackage);
+        //agent.sendPackage(PackageType.PUSH_MESSAGE, false, null, dstPackage);
     }
 
 }

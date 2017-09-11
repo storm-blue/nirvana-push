@@ -27,7 +27,7 @@ import java.util.Objects;
  * -
  * Created by Nirvana on 2017/9/5.
  */
-public class DSTElement {
+public class DSTElement implements L2Element {
 
     private final String content;
 
@@ -59,10 +59,12 @@ public class DSTElement {
     /**
      * 是否为简单DST元素。
      */
+    @Override
     public boolean plain() {
         return plain;
     }
 
+    @Override
     public String getKey() {
         if (plain) {
             throw new ProtocolException("此元素无key值");
@@ -70,6 +72,7 @@ public class DSTElement {
         return key;
     }
 
+    @Override
     public String getValue() {
         return value;
     }

@@ -1,4 +1,3 @@
-# push-server
-###简单的推送服务器实现 
+# push-server 0.2.0
 
-#####发布订阅 20170815
+Rewrite protocol part. Try to decouples the process logic and the transport protocol of message.

@@ -1,9 +1,9 @@
 package com.nirvana.push.client.oio;
 
 import com.nirvana.push.client.PushClientInitializer;
-import com.nirvana.push.protocol.BasePackage;
-import com.nirvana.push.protocol.PackageLevel;
-import com.nirvana.push.protocol.PackageType;
+import com.nirvana.push.core.message.MessageLevel;
+import com.nirvana.push.core.message.PackageType;
+import com.nirvana.push.protocol.ProtocolPackage;
 import com.nirvana.push.protocol.UTF8StringPayloadPart;
 import com.nirvana.push.protocol.l2.DSTPackage;
 import com.nirvana.push.protocol.l2.DSTPayloadPart;
@@ -34,7 +34,7 @@ public class SubClient {
 
 
             UTF8StringPayloadPart payload = new DSTPayloadPart(new DSTPackage(new String[]{"default topic"}));
-            BasePackage basePackage = new BasePackage(PackageType.SUBSCRIBE, PackageLevel.NO_CONFIRM, false, null, payload);
+            ProtocolPackage basePackage = new ProtocolPackage(PackageType.SUBSCRIBE, MessageLevel.NO_CONFIRM, false, null, payload);
             ch.writeAndFlush(basePackage.getByteBuf());
 
             ChannelFuture fc = ch.closeFuture().sync();

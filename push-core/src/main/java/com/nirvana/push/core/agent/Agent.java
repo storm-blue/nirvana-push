@@ -1,6 +1,6 @@
 package com.nirvana.push.core.agent;
 
-import com.nirvana.push.protocol.BasePackage;
+import com.nirvana.push.core.message.Package;
 
 /**
  * 一个Agent是推送服务器内部组件和外界远程客户端之间沟通的桥梁。
@@ -13,12 +13,12 @@ public interface Agent {
     /**
      * 接收到远程客户端命令时触发。
      */
-    void onCommand(BasePackage pkg);
+    void onPackage(Package pkg);
 
     /**
      * 像远程客户端发送一个协议包。
      */
-    void sendPackage(BasePackage pkg);
+    void sendPackage(Package pkg);
 
     /**
      * 断开连接。

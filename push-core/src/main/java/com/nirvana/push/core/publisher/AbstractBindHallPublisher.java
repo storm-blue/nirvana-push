@@ -8,7 +8,7 @@ import java.util.Collection;
  * 绑定单个MessageHall的发布者。
  * Created by Nirvana on 2017/8/3.
  */
-public abstract class AbstractBindHallPublisher<T> implements FreePublisher<T> {
+public abstract class AbstractBindHallPublisher<T> implements FreePublisher {
 
     private MessageHall hall;
 
@@ -20,13 +20,13 @@ public abstract class AbstractBindHallPublisher<T> implements FreePublisher<T> {
     }
 
     @Override
-    public void publish(T message) {
+    public void publish(Object message) {
         hall.putMessage(message);
     }
 
     @Override
-    public void publish(Collection<T> message) {
-        hall.putMessage(message);
+    public void publish(Collection<Object> messages) {
+        hall.putMessage(messages);
     }
 
     public MessageHall getHall() {

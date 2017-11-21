@@ -1,8 +1,8 @@
 package com.nirvana.push.client;
 
-import com.nirvana.push.protocol.BasePackage;
-import com.nirvana.push.protocol.PackageLevel;
-import com.nirvana.push.protocol.PackageType;
+import com.nirvana.push.core.message.MessageLevel;
+import com.nirvana.push.core.message.PackageType;
+import com.nirvana.push.protocol.ProtocolPackage;
 import com.nirvana.push.protocol.l2.DSTPackage;
 import com.nirvana.push.protocol.l2.DSTPayloadPart;
 import io.netty.bootstrap.Bootstrap;
@@ -58,8 +58,8 @@ public class PushClient {
         }
     }
 
-    private static BasePackage getPackage(PackageType type, String[] values) {
-        return new BasePackage(type, PackageLevel.NO_CONFIRM, false, null, new DSTPayloadPart(new DSTPackage(values)));
+    private static ProtocolPackage getPackage(PackageType type, String[] values) {
+        return new ProtocolPackage(type, MessageLevel.NO_CONFIRM, false, null, new DSTPayloadPart(new DSTPackage(values)));
     }
 
     private static void subscribe(Channel channel, String topicName) {

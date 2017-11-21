@@ -1,7 +1,7 @@
 package com.nirvana.push.client;
 
-import com.nirvana.push.protocol.BasePackage;
-import com.nirvana.push.protocol.PackageType;
+import com.nirvana.push.core.message.PackageType;
+import com.nirvana.push.protocol.ProtocolPackage;
 import com.nirvana.push.protocol.l2.DSTPackage;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
@@ -10,12 +10,12 @@ import org.slf4j.LoggerFactory;
 
 import java.nio.charset.Charset;
 
-public class PushClientHandler extends SimpleChannelInboundHandler<BasePackage> {
+public class PushClientHandler extends SimpleChannelInboundHandler<ProtocolPackage> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(PushClientHandler.class);
 
     @Override
-    protected void channelRead0(ChannelHandlerContext ctx, BasePackage msg) throws Exception {
+    protected void channelRead0(ChannelHandlerContext ctx, ProtocolPackage msg) throws Exception {
         if (msg.getPackageType() == PackageType.PUSH_MESSAGE) {
             String content = msg.getPayload().getByteBuf().toString(Charset.forName("UTF-8"));
             DSTPackage dstPackage = new DSTPackage(content);

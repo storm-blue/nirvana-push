@@ -37,4 +37,10 @@ public class AgentNioSocketChannel extends NioSocketChannel {
     public void setAgent(Agent agent) {
         this.agent = agent;
     }
+
+    @Override
+    protected void doClose() throws Exception {
+        super.doClose();
+        agent.destroy();
+    }
 }

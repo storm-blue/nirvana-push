@@ -2,10 +2,16 @@ package com.nirvana.push.protocol;
 
 import com.nirvana.push.core.message.*;
 import com.nirvana.push.core.message.Package;
+import com.nirvana.push.protocol.exception.ProtocolException;
 import com.nirvana.push.protocol.l2.DSTElement;
 import com.nirvana.push.protocol.l2.DSTPackage;
+import com.nirvana.push.protocol.l2.L2ProtocolException;
 import com.nirvana.push.utils.Assert;
 import io.netty.buffer.ByteBuf;
+
+import java.nio.charset.Charset;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * 基础协议包。
@@ -27,11 +33,41 @@ public class ProtocolPackage extends OutputableArray implements ProtocolObject {
 
     private final PayloadPart payload;
 
-    public ProtocolPackage(PackageType type, MessageLevel level, boolean retain, Long identifier, ByteBuf payload) {
-        this(type, level, retain, identifier, new PayloadPart(payload));
+    public static ProtocolPackage fromPackage(Package pkg) {
+
+        Long identifier;
+
+        Object id = pkg.getId();
+        if (id == null) {
+            identifier = null;
+        } else {
+            if ((id instanceof Long) || (id instanceof Integer)) {
+                identifier = (long) id;
+            } else {
+                throw new ProtocolException("Unsupported identifier type: " + id.getClass().getSimpleName());
+            }
+        }
+
+        MessageLevel messageLevel = pkg.getLevel();
+        PackageType packageType = pkg.getType();
+        boolean retain = pkg.isRetain();
+
+        DSTElement[] elements = new DSTElement[pkg.size()];
+        for (int i = 0; i < pkg.size(); i++) {
+            Card card = pkg.getCard(i);
+            Object content = card.getContent();
+            if (content instanceof String) {
+                elements[i] = new DSTElement(card.getName(), (String) content);
+            } else {
+                throw new L2ProtocolException("Unsupported element value type: " + content.getClass().getSimpleName());
+            }
+
+        }
+        DSTPackage dstPackage = new DSTPackage(elements);
+        return new ProtocolPackage(packageType, messageLevel, retain, identifier, new PayloadPart(dstPackage));
     }
 
-    public ProtocolPackage(PackageType type, MessageLevel level, boolean retain, Long identifier, PayloadPart payload) {
+    private ProtocolPackage(PackageType type, MessageLevel level, boolean retain, Long identifier, PayloadPart payload) {
 
         Assert.notNull(payload, "负载不能为空。");
 
@@ -107,7 +143,7 @@ public class ProtocolPackage extends OutputableArray implements ProtocolObject {
     @Override
     public Package getPackage() {
         Package pkg = new Package(getPackageType(), getMessageLevel(), getIdentifier(), isRetain());
-        DSTPackage dstPackage = new DSTPackage(new UTF8StringPayloadPart(payload.byteBuf).getMessage());
+        DSTPackage dstPackage = new DSTPackage(payload.byteBuf.toString(Charset.forName("UTF-8")));
         for (int i = 0; i < dstPackage.size(); i++) {
             DSTElement element = dstPackage.getElement(i);
             Card card = new SimpleCard(element.getKey(), element.getValue());

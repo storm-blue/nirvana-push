@@ -1,4 +1,4 @@
-package com.nirvana.push.utils;
+package com.nirvana.push.protocol;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;

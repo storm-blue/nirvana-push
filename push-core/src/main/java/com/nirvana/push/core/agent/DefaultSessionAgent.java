@@ -16,9 +16,9 @@ import org.slf4j.LoggerFactory;
 /**
  * Created by Nirvana on 2017/11/16.
  */
-public abstract class AbstractSessionAgent extends AbstractCommunicationAgent {
+public class DefaultSessionAgent extends AbstractCommunicationAgent {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(AbstractSessionAgent.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(DefaultSessionAgent.class);
 
     private Session session;
 
@@ -32,7 +32,7 @@ public abstract class AbstractSessionAgent extends AbstractCommunicationAgent {
 
     private NamePublisher publisher = new DefaultNamePublisher();
 
-    public AbstractSessionAgent(ProtocolExchanger exchanger) {
+    public DefaultSessionAgent(PackageDispatcher exchanger) {
         super(exchanger);
     }
 
@@ -86,8 +86,11 @@ public abstract class AbstractSessionAgent extends AbstractCommunicationAgent {
 
     @Override
     protected void doDestroy() throws DestroyFailedException {
-        if (destroySessionOnDisconnect) {
+        if (destroySessionOnDisconnect && session != null) {
             session.destroy();
+        }
+        if (subscriber != null) {
+            subscriber.destroy();
         }
     }
 

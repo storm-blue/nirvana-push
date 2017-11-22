@@ -5,9 +5,9 @@ import com.nirvana.push.core.message.Package;
 /**
  * Created by Nirvana on 2017/11/22.
  */
-public interface ProtocolExchanger {
+public interface PackageDispatcher {
 
-    void output(Package pkg);
+    void dispatch(Package pkg);
 
     void close();
 

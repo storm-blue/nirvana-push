@@ -22,9 +22,9 @@ public abstract class AbstractAcknowledgeAgent extends AbstractDestroyable imple
 
     protected MessageLevel maxSupportLevel = MessageLevel.AT_LEAST_ONCE;
 
-    private ProtocolExchanger exchanger;
+    private PackageDispatcher exchanger;
 
-    public AbstractAcknowledgeAgent(ProtocolExchanger exchanger) {
+    public AbstractAcknowledgeAgent(PackageDispatcher exchanger) {
         this.exchanger = exchanger;
     }
 
@@ -92,7 +92,7 @@ public abstract class AbstractAcknowledgeAgent extends AbstractDestroyable imple
 
     @Override
     public void sendPackage(Package pkg) {
-        exchanger.output(pkg);
+        exchanger.dispatch(pkg);
     }
 
     @Override

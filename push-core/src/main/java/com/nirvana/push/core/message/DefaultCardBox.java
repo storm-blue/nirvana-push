@@ -15,6 +15,12 @@ public class DefaultCardBox implements CardBox {
 
     public DefaultCardBox() {}
 
+    public DefaultCardBox(Object... contents) {
+        for (Object content : contents) {
+            addCard(new SimpleCard(content));
+        }
+    }
+
     @Override
     public void addCard(Card card) {
         if (card == null) {

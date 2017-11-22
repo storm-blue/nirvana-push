@@ -1,12 +1,13 @@
 package com.nirvana.push.client.oio;
 
 import com.nirvana.push.client.PushClientInitializer;
+import com.nirvana.push.core.message.DefaultCardBox;
 import com.nirvana.push.core.message.MessageLevel;
+import com.nirvana.push.core.message.Package;
 import com.nirvana.push.core.message.PackageType;
+import com.nirvana.push.protocol.PayloadPart;
 import com.nirvana.push.protocol.ProtocolPackage;
-import com.nirvana.push.protocol.UTF8StringPayloadPart;
 import com.nirvana.push.protocol.l2.DSTPackage;
-import com.nirvana.push.protocol.l2.DSTPayloadPart;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
@@ -32,9 +33,9 @@ public class SubClient {
 
             Channel ch = f.channel();
 
+            Package pkg = new Package(PackageType.SUBSCRIBE, MessageLevel.NO_CONFIRM, null, false, new DefaultCardBox("default topic"));
 
-            UTF8StringPayloadPart payload = new DSTPayloadPart(new DSTPackage(new String[]{"default topic"}));
-            ProtocolPackage basePackage = new ProtocolPackage(PackageType.SUBSCRIBE, MessageLevel.NO_CONFIRM, false, null, payload);
+            ProtocolPackage basePackage = ProtocolPackage.fromPackage(pkg);
             ch.writeAndFlush(basePackage.getByteBuf());
 
             ChannelFuture fc = ch.closeFuture().sync();

@@ -19,7 +19,7 @@
         </dependency>
         <dependency>
             <groupId>com.nirvana</groupId>
-            <artifactId>push-server</artifactId>
+            <artifactId>push-protocol</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
     </dependencies>

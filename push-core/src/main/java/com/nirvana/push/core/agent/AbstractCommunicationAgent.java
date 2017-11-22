@@ -11,7 +11,7 @@ import com.nirvana.push.utils.StringUtils;
  */
 public abstract class AbstractCommunicationAgent extends AbstractAcknowledgeAgent {
 
-    public AbstractCommunicationAgent(ProtocolExchanger exchanger) {
+    public AbstractCommunicationAgent(PackageDispatcher exchanger) {
         super(exchanger);
     }
 

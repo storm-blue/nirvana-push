@@ -16,7 +16,7 @@ public class Package implements CardBox {
 
     private boolean retain = false;
 
-    private CardBox box = new DefaultCardBox();
+    private CardBox box;
 
     public Package(PackageType type) {
         this(type, MessageLevel.NO_CONFIRM, null, false);
@@ -31,10 +31,15 @@ public class Package implements CardBox {
     }
 
     public Package(PackageType type, MessageLevel level, Object id, boolean retain) {
+        this(type, level, id, retain, new DefaultCardBox());
+    }
+
+    public Package(PackageType type, MessageLevel level, Object id, boolean retain, CardBox box) {
         this.type = type;
         this.level = level;
         this.id = id;
         this.retain = retain;
+        this.box = box;
     }
 
     @Override

@@ -1,5 +1,6 @@
 package com.nirvana.push.core.agent;
 
+import com.nirvana.push.core.Destroyable;
 import com.nirvana.push.core.message.Package;
 
 /**
@@ -8,7 +9,7 @@ import com.nirvana.push.core.message.Package;
  * Agent是面向单个连接。也就是说一个远程客户端在服务器内部应该对应且仅对应一个Agent。
  * Created by Nirvana on 2017/8/7.
  */
-public interface Agent {
+public interface Agent extends Destroyable {
 
     /**
      * 接收到远程客户端命令时触发。

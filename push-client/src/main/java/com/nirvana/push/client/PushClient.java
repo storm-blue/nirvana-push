@@ -1,10 +1,12 @@
 package com.nirvana.push.client;
 
+import com.nirvana.push.core.message.DefaultCardBox;
 import com.nirvana.push.core.message.MessageLevel;
+import com.nirvana.push.core.message.Package;
 import com.nirvana.push.core.message.PackageType;
+import com.nirvana.push.protocol.PayloadPart;
 import com.nirvana.push.protocol.ProtocolPackage;
 import com.nirvana.push.protocol.l2.DSTPackage;
-import com.nirvana.push.protocol.l2.DSTPayloadPart;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelId;
@@ -59,7 +61,8 @@ public class PushClient {
     }
 
     private static ProtocolPackage getPackage(PackageType type, String[] values) {
-        return new ProtocolPackage(type, MessageLevel.NO_CONFIRM, false, null, new DSTPayloadPart(new DSTPackage(values)));
+        Package pkg = new Package(type, MessageLevel.NO_CONFIRM, null, false, new DefaultCardBox(values));
+        return ProtocolPackage.fromPackage(pkg);
     }
 
     private static void subscribe(Channel channel, String topicName) {

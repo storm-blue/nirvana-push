@@ -115,7 +115,12 @@ public abstract class AbstractCommunicationAgent extends AbstractAcknowledgeAgen
     private void onPublish(Package in, Package acknowledge) {
         String topicName = (String) in.getCardContent(0);
         String message = (String) in.getCardContent(1);
-        MessageLevel level = MessageLevel.valueOf((String) in.getCardContent(2));
+        MessageLevel level;
+        try {
+            level = MessageLevel.valueOf((String) in.getCardContent(2));
+        } catch (Exception e) {
+            level = MessageLevel.NO_CONFIRM;
+        }
         onPublish(topicName, message, level);
         acknowledge.addContent("OK");
     }

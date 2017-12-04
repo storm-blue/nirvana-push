@@ -17,6 +17,7 @@ public class Message implements CardBox {
     public Message(MessageBroker broker) {
         meta = new MessageMeta();
         meta.setBroker(broker);
+        cardBox = new DefaultCardBox();
     }
 
     public Message(MessageMeta meta) {

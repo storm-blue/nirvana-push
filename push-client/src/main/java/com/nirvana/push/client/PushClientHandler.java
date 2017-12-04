@@ -19,17 +19,15 @@ public class PushClientHandler extends SimpleChannelInboundHandler<ProtocolPacka
         if (msg.getPackageType() == PackageType.PUSH_MESSAGE) {
             String content = msg.getPayload().getByteBuf().toString(Charset.forName("UTF-8"));
             DSTPackage dstPackage = new DSTPackage(content);
-            String message = dstPackage.get(0);
-            //System.out.println("receive : " + message);
+            //System.out.println(dstPackage.getCardBox().getCard(0).getContent());
         }
         msg.release();
     }
 
-
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
         LOGGER.info("遇到IO异常，关闭连接。");
+        PushClient.channels.remove(ctx.channel());
         ctx.close();
-        PushClient.channels.remove(ctx.channel().id());
     }
 }

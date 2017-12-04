@@ -1,6 +1,7 @@
 package com.nirvana.push.core.broker;
 
 import com.nirvana.push.core.message.Message;
+import com.nirvana.push.core.message.SimpleCard;
 import com.nirvana.push.core.subscriber.Subscriber;
 
 import javax.naming.OperationNotSupportedException;
@@ -25,7 +26,9 @@ public class SimpleAutoMessageBroker extends MessageBroker {
     @Override
     public void putMessage(Object message) {
         for (Subscriber subscriber : subscribers) {
-            subscriber.onMessage(new Message(this));
+            Message message0 = new Message(this);
+            message0.addCard(new SimpleCard(message));
+            subscriber.onMessage(message0);
         }
     }
 

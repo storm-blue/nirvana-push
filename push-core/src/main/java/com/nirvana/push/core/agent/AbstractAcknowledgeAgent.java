@@ -49,6 +49,7 @@ public abstract class AbstractAcknowledgeAgent extends AbstractDestroyable imple
     }
 
     protected void onException(Exception e) {
+        LOGGER.error("Error occurs:", e);
         disconnect();
     }
 

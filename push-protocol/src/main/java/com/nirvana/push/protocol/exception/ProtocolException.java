@@ -1,14 +1,11 @@
 package com.nirvana.push.protocol.exception;
 
-import com.nirvana.push.exception.NoStackException;
-
 /**
- * 协议异常。
  * Created by Nirvana on 2017/8/5.
  */
-public class ProtocolException extends NoStackException {
+public class ProtocolException extends RuntimeException {
 
-    private static final String MESSAGE = "协议异常。";
+    private static final String MESSAGE = "Protocol exception.";
 
     public ProtocolException() {
         super(MESSAGE);

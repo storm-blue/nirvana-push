@@ -17,9 +17,9 @@ public class StatisticsHandler extends ChannelOutboundHandlerAdapter {
 
     private static AtomicLong atomicLong = new AtomicLong(0);
 
-    private static long lastTime = System.currentTimeMillis();
+    private static volatile long lastTime = System.currentTimeMillis();
 
-    private static long lastCount = 0;
+    private static volatile long lastCount = 0;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(StatisticsHandler.class);
 
@@ -27,15 +27,13 @@ public class StatisticsHandler extends ChannelOutboundHandlerAdapter {
     public void write(ChannelHandlerContext ctx, Object msg, ChannelPromise promise) throws Exception {
         super.write(ctx, msg, promise);
         long value = atomicLong.incrementAndGet();
-        if (value % 10000 == 0) {
+        long now = System.currentTimeMillis();
+        long over = now - lastTime;
+        if (over > 5000) {
             System.out.println("已推送消息数量：" + value);
-            long now = System.currentTimeMillis();
-            long over = now - lastTime;
-            if (over > 10000) {
-                System.out.println("实时每秒吞吐量：" + ((double) (value - lastCount) / over) * 1000);
-                lastTime = now;
-                lastCount = value;
-            }
+            System.out.println("实时每秒吞吐量：" + ((double) (value - lastCount) / over) * 1000);
+            lastTime = now;
+            lastCount = value;
         }
     }
 }

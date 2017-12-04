@@ -5,7 +5,7 @@ import com.nirvana.push.protocol.exception.ProtocolException;
 import java.util.*;
 
 /**
- * DST协议定义。
+ * DST L2 protocol definitions.
  * Created by Nirvana on 2017/9/5.
  */
 final class DSTDefinition {

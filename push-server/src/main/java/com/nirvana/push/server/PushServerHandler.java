@@ -18,7 +18,7 @@ public class PushServerHandler extends SimpleChannelInboundHandler<ProtocolPacka
 
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, ProtocolPackage msg) throws Exception {
-        LOGGER.debug("开始处理接收的协议包：{}", msg);
+        LOGGER.debug("Start process received package: {}", msg);
         Agent agent = ((AgentNioSocketChannel) ctx.channel()).getAgent();
         agent.onPackage(msg.getPackage());
         msg.release();
@@ -26,7 +26,7 @@ public class PushServerHandler extends SimpleChannelInboundHandler<ProtocolPacka
 
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
-        LOGGER.info("遇到IO异常，关闭连接。");
+        LOGGER.info("Exception occurs, close connection: ", cause);
         ctx.close();
     }
 }

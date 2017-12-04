@@ -1,11 +1,9 @@
 package com.nirvana.push.core.agent.exception;
 
-import com.nirvana.push.exception.NoStackException;
-
 /**
  * Created by Nirvana on 2017/9/6.
  */
-public class CommunicationException extends NoStackException {
+public class CommunicationException extends RuntimeException {
 
     private static final String MESSAGE = "Communicate Exception.";
 

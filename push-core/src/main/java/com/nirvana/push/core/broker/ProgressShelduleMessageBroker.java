@@ -15,7 +15,7 @@ import java.util.Date;
  */
 public class ProgressShelduleMessageBroker extends MessageBroker {
 
-    private MarkableMessageSource messageSource = new MarkableMessageSource();
+    private MarkableMessageSource messageSource = new OuroborosMessageSource();
 
     //whether use batch push mode.
     private boolean batch = false;

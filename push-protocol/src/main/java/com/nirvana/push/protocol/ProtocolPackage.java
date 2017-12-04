@@ -3,15 +3,11 @@ package com.nirvana.push.protocol;
 import com.nirvana.push.core.message.*;
 import com.nirvana.push.core.message.Package;
 import com.nirvana.push.protocol.exception.ProtocolException;
-import com.nirvana.push.protocol.l2.DSTElement;
 import com.nirvana.push.protocol.l2.DSTPackage;
-import com.nirvana.push.protocol.l2.L2ProtocolException;
 import com.nirvana.push.utils.Assert;
-import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 import java.nio.charset.Charset;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * 基础协议包。
@@ -52,24 +48,13 @@ public class ProtocolPackage extends OutputableArray implements ProtocolObject {
         PackageType packageType = pkg.getType();
         boolean retain = pkg.isRetain();
 
-        DSTElement[] elements = new DSTElement[pkg.size()];
-        for (int i = 0; i < pkg.size(); i++) {
-            Card card = pkg.getCard(i);
-            Object content = card.getContent();
-            if (content instanceof String) {
-                elements[i] = new DSTElement(card.getName(), (String) content);
-            } else {
-                throw new L2ProtocolException("Unsupported element value type: " + content.getClass().getSimpleName());
-            }
-
-        }
-        DSTPackage dstPackage = new DSTPackage(elements);
-        return new ProtocolPackage(packageType, messageLevel, retain, identifier, new PayloadPart(dstPackage));
+        DSTPackage dstPackage = new DSTPackage(pkg);
+        return new ProtocolPackage(packageType, messageLevel, retain, identifier, new PayloadPart(Unpooled.copiedBuffer(dstPackage.getContent(), Charset.forName("UTF-8"))));
     }
 
     private ProtocolPackage(PackageType type, MessageLevel level, boolean retain, Long identifier, PayloadPart payload) {
 
-        Assert.notNull(payload, "负载不能为空。");
+        Assert.notNull(payload, "payload must not be null.");
 
         boolean identifiable = identifier != null;
 
@@ -95,9 +80,9 @@ public class ProtocolPackage extends OutputableArray implements ProtocolObject {
     }
 
     public ProtocolPackage(HeaderPart header, ScalableNumberPart remainLength, ScalableNumberPart identifier, PayloadPart payload) {
-        Assert.notNull(header, "头部不能为空。");
-        Assert.notNull(remainLength, "剩余长度不能为空。");
-        Assert.notNull(payload, "负载不能为空。");
+        Assert.notNull(header, "header part must not be null.");
+        Assert.notNull(remainLength, "remain length part must not be null.");
+        //Assert.notNull(payload, "payload must not be null.");
         this.header = header;
         this.remainLength = remainLength;
         this.identifier = identifier;
@@ -142,13 +127,7 @@ public class ProtocolPackage extends OutputableArray implements ProtocolObject {
 
     @Override
     public Package getPackage() {
-        Package pkg = new Package(getPackageType(), getMessageLevel(), getIdentifier(), isRetain());
         DSTPackage dstPackage = new DSTPackage(payload.byteBuf.toString(Charset.forName("UTF-8")));
-        for (int i = 0; i < dstPackage.size(); i++) {
-            DSTElement element = dstPackage.getElement(i);
-            Card card = new SimpleCard(element.getKey(), element.getValue());
-            pkg.addCard(card);
-        }
-        return pkg;
+        return new Package(getPackageType(), getMessageLevel(), getIdentifier(), isRetain(), dstPackage.getCardBox());
     }
 }

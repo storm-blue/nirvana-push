@@ -38,6 +38,7 @@ public class DefaultSessionAgent extends AbstractCommunicationAgent {
 
     @Override
     protected void onConnect(String username, String password) throws ConnectionException {
+        LOGGER.debug("on connect, username: {}, password: {}", username, password);
         session = sessionContext.getSession(username, alwaysCreateNewSession);
         subscriber = new SimpleSubscriber(this, session);
     }
@@ -64,6 +65,7 @@ public class DefaultSessionAgent extends AbstractCommunicationAgent {
 
     @Override
     protected void onPublish(String topicName, String message, MessageLevel level) {
+        LOGGER.debug("on publish, topicName: {}, message: {}, level: {}", topicName, message, level);
         publisher.publish(topicName, message);
     }
 

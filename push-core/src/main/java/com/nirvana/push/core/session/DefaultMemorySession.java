@@ -35,7 +35,7 @@ public class DefaultMemorySession extends AbstractSession {
     }
 
     @Override
-    public Object getAttribute(String name) {
+        public Object getAttribute(String name) {
         return attributes.get(name);
     }
 

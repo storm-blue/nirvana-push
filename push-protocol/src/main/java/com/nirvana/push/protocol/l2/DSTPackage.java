@@ -1,5 +1,9 @@
 package com.nirvana.push.protocol.l2;
 
+import com.nirvana.push.core.message.Card;
+import com.nirvana.push.core.message.CardBox;
+import com.nirvana.push.core.message.DefaultCardBox;
+import com.nirvana.push.core.message.SimpleCard;
 import com.nirvana.push.protocol.AbstractOutputable;
 import com.nirvana.push.protocol.exception.ProtocolException;
 import io.netty.buffer.Unpooled;
@@ -8,80 +12,52 @@ import java.nio.charset.Charset;
 import java.util.*;
 
 /**
- * DST文本协议实现。
+ * DST文本协议由换行符分割的DST元素组成。
+ * DST元素是描述DST协议中的基本元素，它有两种形式。
+ * <p>
+ * ===============================简单形式================================
+ * 以'-'开头的值。下面都是合法的格式：
+ * [-tom]
+ * [-tom-and-jerry]
+ * [-]
+ * ===============================复合形式================================
+ * key-value形式，以kv之间用'-'分隔符隔开的。如果元素中有多个'-'号，视第一个'-'号为分隔符。
+ * 下面都是合法的格式：
+ * [username-rose]
+ * [password-rose-love-jack]
+ * [password-]
+ * [1-tom]
+ * [1::a-tom]
+ * [1::b-jack]
+ * ===============================特殊字符=================================
+ * 特殊字符有'-','~','\r','\n',key值中不允许出现特殊字符。value中如果出现特殊字符，则需要转码处理。
+ * -
  * Created by Nirvana on 2017/9/4.
  */
-public class DSTPackage extends AbstractOutputable implements L2Package {
+public class DSTPackage implements L2ProtocolObject {
 
     /*协议包原始文本*/
     private String content;
 
-    /**
-     * DST协议中的元素是有序的，且顺序有意义。
-     */
-    private List<DSTElement> elements = new ArrayList<>();
-
-    /**
-     * 此DSTPackage中值组织而成的Map.
-     * 假如是k-v形式的DSTElement，则其在此map中对应的key值为DSTElement的key值。
-     * 假如是简单DSTElement，则其在此map中对应的key值为:'-'+元素的index.
-     * 此map用于如下两个方法：
-     *
-     * @see #get(String)
-     * @see #get(int)
-     */
-    private Map<String, DSTElement> values = new HashMap<>();
-
-    /**
-     * 从Values构建一个DST 协议包.
-     */
-    public DSTPackage(Object[] values) {
-        StringBuilder contentBuilder = new StringBuilder();
-        for (Object value : values) {
-            DSTElement element = new DSTElement(value.toString());
-            elements.add(element);
-            contentBuilder.append(element.content()).append('\n');
-            this.values.put(String.valueOf(DSTDefinition.SEPARATOR) + (elements.size() - 1), element);
-        }
-        content = contentBuilder.toString();
-        byteBuf = Unpooled.copiedBuffer(content, Charset.forName("UTF-8"));
-    }
+    private CardBox cardBox;
 
     /**
      * 从Elements构建一个DST协议包.
      */
-    public DSTPackage(Map<String, Object> values) {
+    public DSTPackage(CardBox cardBox) {
+        this.cardBox = cardBox;
         StringBuilder contentBuilder = new StringBuilder();
-        for (String key : values.keySet()) {
-            DSTElement element = new DSTElement(key, values.get(key).toString());
-            this.elements.add(element);
-            contentBuilder.append(element.content()).append('\n');
-            if (element.plain()) {
-                values.put(String.valueOf(DSTDefinition.SEPARATOR) + (this.elements.size() - 1), element);
-            } else {
-                values.put(element.getKey(), element);
+        for (Card card : cardBox) {
+            String key = card.getName() == null ? "" : card.getName();
+            Object cardContent = card.getContent();
+            if (!(cardContent instanceof String)) {
+                throw new L2ProtocolException("Unsupported element value type: " + content.getClass().getSimpleName());
             }
+            String value = (String) cardContent;
+            String line = key + DSTDefinition.SEPARATOR + DSTDefinition.encode(value);
+            contentBuilder.append(line).append('\n');
         }
         content = contentBuilder.toString();
-        byteBuf = Unpooled.copiedBuffer(content, Charset.forName("UTF-8"));
-    }
-
-    /**
-     * 从Elements构建一个DST协议包.
-     */
-    public DSTPackage(DSTElement... elements) {
-        StringBuilder contentBuilder = new StringBuilder();
-        for (DSTElement element : elements) {
-            this.elements.add(element);
-            contentBuilder.append(element.content()).append('\n');
-            if (element.plain()) {
-                values.put(String.valueOf(DSTDefinition.SEPARATOR) + (this.elements.size() - 1), element);
-            } else {
-                values.put(element.getKey(), element);
-            }
-        }
-        content = contentBuilder.toString();
-        byteBuf = Unpooled.copiedBuffer(content, Charset.forName("UTF-8"));
     }
 
     /**
@@ -89,7 +65,7 @@ public class DSTPackage extends AbstractOutputable implements L2Package {
      */
     public DSTPackage(String data) {
         this.content = data;
-        byteBuf = Unpooled.copiedBuffer(content, Charset.forName("UTF-8"));
+        cardBox = new DefaultCardBox();
 
         int index = 0;
         boolean crossSeparator = false;
@@ -118,13 +94,8 @@ public class DSTPackage extends AbstractOutputable implements L2Package {
                     throw new ProtocolException("格式错误，缺少:\'" + DSTDefinition.SEPARATOR + "\'index:" + index);
                 }
 
-                DSTElement element = new DSTElement(keyBuilder.toString(), DSTDefinition.decode(valueBuilder.toString()));
-                elements.add(element);
-                if (element.plain()) {
-                    values.put(String.valueOf(DSTDefinition.SEPARATOR) + (elements.size() - 1), element);
-                } else {
-                    values.put(element.getKey(), element);
-                }
+                Card card = new SimpleCard(keyBuilder.toString(), DSTDefinition.decode(valueBuilder.toString()));
+                cardBox.addCard(card);
 
                 keyBuilder = new StringBuilder();
                 valueBuilder = new StringBuilder();
@@ -154,58 +125,10 @@ public class DSTPackage extends AbstractOutputable implements L2Package {
         return content;
     }
 
-    /**
-     * DSTPackage中的key-value形式的元素，通过key获取value值
-     */
     @Override
-    public String get(String key) {
-        if (key.contains(String.valueOf(DSTDefinition.SEPARATOR))) {
-            throw new ProtocolException("Key值不合法");
-        }
-        DSTElement element = values.get(key);
-        return element == null ? null : element.getValue();
+    public CardBox getCardBox() {
+        return cardBox;
     }
 
-    /**
-     * 根据Index获取Plain DSTElement的值。
-     * 此方法不会获取key-value形式的DSTElement.
-     *
-     * @return 如果目标index无简单DSTElement元素，返回null.否则返回值
-     */
-    @Override
-    public String get(int index) {
-        DSTElement element = values.get(String.valueOf(DSTDefinition.SEPARATOR) + index);
-        return element == null ? null : element.getValue();
-    }
-
-    /**
-     * 根据Index获取DSTElement。
-     */
-    @Override
-    public DSTElement getElement(int index) {
-        return elements.get(index);
-    }
-
-    /**
-     * DST协议包中元素数量。
-     */
-    @Override
-    public int size() {
-        return elements.size();
-    }
-
-    /**
-     * 获取所有key。
-     */
-    public Collection<String> keys() {
-        return values.keySet();
-    }
-
-    public void print() {
-        System.out.println("[elements]:");
-        elements.forEach(System.out::println);
-        System.out.println("[values]:");
-        values.forEach((k, v) -> System.out.println(k + ":" + v));
-    }
 
 }

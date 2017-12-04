@@ -1,4 +1,2 @@
 # push-server
-###简单的推送服务器实现 
-
-#####发布订阅 20170815
+### A message push server base on Netty.

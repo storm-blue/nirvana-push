@@ -3,8 +3,6 @@ package com.nirvana.push.core.broker;
 import com.nirvana.push.core.subscriber.Subscriber;
 import com.nirvana.push.utils.Assert;
 
-import java.util.Collection;
-import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -16,61 +14,47 @@ import java.util.concurrent.ConcurrentHashMap;
 public abstract class MessageBroker implements MessageHall {
 
     /**
-     * 标识符一旦创建不可更改。
+     * After construction, Id can not be edit.
      */
-    private final Object identifier;
+    private final String id;
 
     /**
-     * 线程安全的订阅者集合。
+     * Thread safe set from ConcurrentHashMap.
      */
-    private Set<Subscriber> subscribers = new ConcurrentHashMap<Subscriber, Boolean>().keySet(true);
+    protected final Set<Subscriber> subscribers = new ConcurrentHashMap<Subscriber, Boolean>().keySet(true);
 
-    public MessageBroker(Object identifier) {
-        Assert.notNull(identifier, "标识符不能为空");
-        this.identifier = identifier;
+    public MessageBroker(String id) {
+        Assert.notNull(id, "broker id must not be null.");
+        this.id = id;
     }
 
     public void addSubscriber(Subscriber subscriber) {
+        beforeAdd(subscriber);
         subscribers.add(subscriber);
+        afterAdd(subscriber);
     }
+
+    //Do something before adding a subscriber.
+    protected void beforeAdd(Subscriber subscriber) {}
+
+    //Do something after adding a subscriber.
+    protected void afterAdd(Subscriber subscriber) {}
 
     public void removeSubscriber(Subscriber subscriber) {
+        beforeRemove(subscriber);
         subscribers.remove(subscriber);
+        afterRemove(subscriber);
     }
 
-    public Set<Subscriber> getSubscribers() {
-        return subscribers;
+    //Do something before removing a subscriber.
+    protected void beforeRemove(Subscriber subscriber) {}
+
+    //Do something after removing a subscriber.
+    protected void afterRemove(Subscriber subscriber) {}
+
+    public String getId() {
+        return id;
     }
 
-    @SuppressWarnings("unchecked")
-    protected void handle(Object message) {
-        for (Subscriber subscriber : subscribers) {
-            subscriber.onMessage(message);
-        }
-    }
-
-    protected void handle(Collection<Object> messages) {
-        for (Object message : messages) {
-            handle(message);
-        }
-    }
-
-    public Object getIdentifier() {
-        return identifier;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        MessageBroker that = (MessageBroker) o;
-
-        return identifier.equals(that.identifier);
-    }
-
-    @Override
-    public int hashCode() {
-        return identifier.hashCode();
-    }
+    public abstract void work();
 }

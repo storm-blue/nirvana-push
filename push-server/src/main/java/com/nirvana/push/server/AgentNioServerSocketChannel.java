@@ -1,6 +1,8 @@
 package com.nirvana.push.server;
 
-import com.nirvana.push.server.agent.DefaultAgent;
+import com.nirvana.push.core.agent.Agent;
+import com.nirvana.push.core.agent.DefaultSessionAgent;
+import com.nirvana.push.server.agent.NettyPackageDispatcher;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.util.internal.SocketUtils;
 import io.netty.util.internal.logging.InternalLogger;
@@ -24,7 +26,9 @@ public class AgentNioServerSocketChannel extends NioServerSocketChannel {
         try {
             if (ch != null) {
                 AgentNioSocketChannel channel = new AgentNioSocketChannel(this, ch);
-                channel.setAgent(new DefaultAgent(channel));
+                NettyPackageDispatcher exchanger = new NettyPackageDispatcher(channel);
+                Agent agent = new DefaultSessionAgent(exchanger);
+                channel.setAgent(agent);
                 buf.add(channel);
                 return 1;
             }

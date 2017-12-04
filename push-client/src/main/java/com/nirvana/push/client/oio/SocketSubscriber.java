@@ -1,9 +1,11 @@
 package com.nirvana.push.client.oio;
 
-import com.nirvana.push.protocol.BasePackage;
-import com.nirvana.push.protocol.PackageLevel;
-import com.nirvana.push.protocol.PackageType;
-import com.nirvana.push.protocol.UTF8StringPayloadPart;
+import com.nirvana.push.core.message.DefaultCardBox;
+import com.nirvana.push.core.message.MessageLevel;
+import com.nirvana.push.core.message.Package;
+import com.nirvana.push.core.message.PackageType;
+import com.nirvana.push.protocol.PayloadPart;
+import com.nirvana.push.protocol.ProtocolPackage;
 
 import java.io.*;
 import java.net.Socket;
@@ -19,8 +21,9 @@ public class SocketSubscriber {
         Socket socket = new Socket("127.0.0.1", 32222);
         OutputStream outputStream = socket.getOutputStream();
 
-        UTF8StringPayloadPart payload = new UTF8StringPayloadPart("!");
-        BasePackage basePackage = new BasePackage(PackageType.SUBSCRIBE, PackageLevel.NO_CONFIRM, false, null, payload);
+        String string = "!";
+        Package pkg = new Package(PackageType.SUBSCRIBE, MessageLevel.NO_CONFIRM, null, false, new DefaultCardBox(string));
+        ProtocolPackage basePackage = ProtocolPackage.fromPackage(pkg);
         basePackage.output(outputStream);
 
         InputStream inputStream = socket.getInputStream();

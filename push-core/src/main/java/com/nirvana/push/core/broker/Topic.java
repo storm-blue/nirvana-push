@@ -1,6 +1,8 @@
 package com.nirvana.push.core.broker;
 
 
+import com.nirvana.push.core.message.Message;
+
 import java.util.Collection;
 
 /**
@@ -15,16 +17,16 @@ public interface Topic extends MessageHall {
      *
      * @param maxNum 最大消费数量
      */
-    Collection<Object> consume(int maxNum);
+    Collection<Message> consume(int maxNum);
 
     /**
      * 单条消费。
      */
-    Object consume();
+    Message consume();
 
     /**
      * 消费全部消息。
      */
-    Collection<Object> consumeAll();
+    Collection<Message> consumeAll();
 
 }

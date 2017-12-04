@@ -6,10 +6,10 @@ import java.util.Collection;
  * 自由发布者。
  * Created by Nirvana on 2017/9/3.
  */
-public interface FreePublisher<T> extends Publisher {
+public interface FreePublisher extends Publisher {
 
-    void publish(T msg);
+    void publish(Object message);
 
-    void publish(Collection<T> msg);
+    void publish(Collection<Object> messages);
 
 }

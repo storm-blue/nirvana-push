@@ -1,11 +1,10 @@
 package com.nirvana.push.server;
 
-import com.nirvana.push.protocol.BasePackage;
+import com.nirvana.push.protocol.ProtocolPackage;
 import com.nirvana.push.core.agent.Agent;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
-import io.netty.handler.timeout.IdleStateEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -13,21 +12,21 @@ import org.slf4j.LoggerFactory;
  * Created by Nirvana on 2017/8/1.
  */
 @ChannelHandler.Sharable
-public class PushServerHandler extends SimpleChannelInboundHandler<BasePackage> {
+public class PushServerHandler extends SimpleChannelInboundHandler<ProtocolPackage> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(PushServerHandler.class);
 
     @Override
-    protected void channelRead0(ChannelHandlerContext ctx, BasePackage msg) throws Exception {
-        LOGGER.debug("开始处理接收的协议包：{}", msg);
+    protected void channelRead0(ChannelHandlerContext ctx, ProtocolPackage msg) throws Exception {
+        LOGGER.debug("Start process received package: {}", msg);
         Agent agent = ((AgentNioSocketChannel) ctx.channel()).getAgent();
-        agent.onCommand(msg);
+        agent.onPackage(msg.getPackage());
         msg.release();
     }
 
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
-        LOGGER.info("遇到IO异常，关闭连接。");
+        LOGGER.info("Exception occurs, close connection: ", cause);
         ctx.close();
     }
 }

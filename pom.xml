@@ -5,14 +5,15 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.nirvana</groupId>
-    <artifactId>nirvana-push</artifactId>
+    <artifactId>nirvana-ezalor</artifactId>
     <packaging>pom</packaging>
     <version>1.0-SNAPSHOT</version>
     <modules>
-        <module>push-client</module>
-        <module>push-server</module>
-        <module>push-core</module>
-        <module>push-protocol</module>
+        <module>ezalor-client</module>
+        <module>ezalor-server</module>
+        <module>ezalor-core</module>
+        <module>ezalor-protocol</module>
+        <module>ezalor-zookeeper</module>
     </modules>
 
     <dependencyManagement>
@@ -30,6 +31,13 @@
                 <groupId>ch.qos.logback</groupId>
                 <artifactId>logback-classic</artifactId>
                 <version>1.2.3</version>
+            </dependency>
+
+            <!-- https://mvnrepository.com/artifact/org.apache.curator/curator-recipes -->
+            <dependency>
+                <groupId>org.apache.curator</groupId>
+                <artifactId>curator-recipes</artifactId>
+                <version>4.0.0</version>
             </dependency>
 
         </dependencies>

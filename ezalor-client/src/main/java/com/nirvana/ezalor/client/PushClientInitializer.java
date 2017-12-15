@@ -8,7 +8,7 @@ import io.netty.channel.socket.SocketChannel;
 public class PushClientInitializer extends ChannelInitializer<SocketChannel> {
 
     @Override
-    protected void initChannel(SocketChannel ch) throws Exception {
+    protected void initChannel(SocketChannel ch) {
         ChannelPipeline pipeline = ch.pipeline();
 
        pipeline.addLast("decoder", new PackageFrameDecoder(8192));

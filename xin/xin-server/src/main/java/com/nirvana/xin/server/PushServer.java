@@ -1,0 +1,77 @@
+package com.nirvana.xin.server;
+
+import com.nirvana.xin.protocol.decoder.PackageFrameDecoder;
+import io.netty.bootstrap.ServerBootstrap;
+import io.netty.channel.*;
+import io.netty.channel.nio.NioEventLoopGroup;
+import io.netty.channel.socket.SocketChannel;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+/**
+ * Created by Nirvana on 2017/8/1.
+ */
+public class PushServer {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(PushServer.class);
+
+    private int port = 32222;
+
+    private Channel channel;
+
+    private EventLoopGroup bossGroup;
+
+    private EventLoopGroup workerGroup;
+
+    PushServer() {
+    }
+
+    public PushServer(int port) {
+        this.port = port;
+    }
+
+
+    //TODO 池化Allocator,优化内存控制。option()方法。
+    ChannelFuture startServer() {
+
+        bossGroup = new NioEventLoopGroup();
+        workerGroup = new NioEventLoopGroup();
+
+        ServerBootstrap b = new ServerBootstrap();
+        b.group(bossGroup, workerGroup);
+        b.channel(AgentNioServerSocketChannel.class);
+        b.childHandler(new ChannelInitializer<SocketChannel>() {
+            @Override
+            protected void initChannel(SocketChannel ch) {
+                ChannelPipeline pipeline = ch.pipeline();
+                // 解码器
+                pipeline.addLast("framer", new PackageFrameDecoder(8192));
+                // 自己的逻辑Handler
+                pipeline.addLast("handler", new PushServerHandler());
+                pipeline.addLast("statistics", new StatisticsHandler());
+            }
+        });
+
+        try {
+            // 服务器绑定端口监听
+            ChannelFuture f = b.bind(port).sync();
+            channel = f.channel();
+            LOGGER.info("服务器已启动，端口:" + port);
+            return f;
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
+
+
+    void destroy() {
+        if (channel != null) {
+            channel.close();
+        }
+        bossGroup.shutdownGracefully();
+        workerGroup.shutdownGracefully();
+    }
+
+}

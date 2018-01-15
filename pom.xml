@@ -5,15 +5,12 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.nirvana</groupId>
-    <artifactId>nirvana-ezalor</artifactId>
+    <artifactId>nirvana-push</artifactId>
     <packaging>pom</packaging>
     <version>1.0-SNAPSHOT</version>
     <modules>
-        <module>ezalor-client</module>
-        <module>ezalor-server</module>
-        <module>ezalor-core</module>
-        <module>ezalor-protocol</module>
-        <module>ezalor-zookeeper</module>
+        <module>xin</module>
+        <module>ezalor</module>
     </modules>
 
     <dependencyManagement>

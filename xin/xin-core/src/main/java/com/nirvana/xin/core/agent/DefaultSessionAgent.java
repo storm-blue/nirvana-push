@@ -1,8 +1,8 @@
 package com.nirvana.xin.core.agent;
 
-import com.nirvana.xin.core.DestroyFailedException;
+import com.nirvana.purist.core.DestroyFailedException;
 import com.nirvana.xin.core.agent.exception.ConnectionException;
-import com.nirvana.xin.core.message.MessageLevel;
+import com.nirvana.purist.core.message.*;
 import com.nirvana.xin.core.publisher.DefaultNamePublisher;
 import com.nirvana.xin.core.publisher.NamePublisher;
 import com.nirvana.xin.core.session.MemorySessionContext;
@@ -66,7 +66,11 @@ public class DefaultSessionAgent extends AbstractCommunicationAgent {
     @Override
     protected void onPublish(String topicName, String message, MessageLevel level) {
         LOGGER.debug("on publish, topicName: {}, message: {}, level: {}", topicName, message, level);
-        publisher.publish(topicName, message);
+
+        CardBox publisherInfo = new DefaultCardBox();//TODO add publisher info.
+        CardBox content = new DefaultCardBox(message);
+        Message msg = new Message(publisherInfo, content);
+        publisher.publish(topicName, msg);
     }
 
     private static final String LAST_PING = "_last_ping";

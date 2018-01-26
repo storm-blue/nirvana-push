@@ -1,8 +1,8 @@
 package com.nirvana.xin.core.broker;
 
-import com.nirvana.xin.core.message.Message;
-import com.nirvana.xin.core.message.SimpleCard;
-import com.nirvana.xin.core.subscriber.Subscriber;
+import com.nirvana.purist.core.broker.MessageBroker;
+import com.nirvana.purist.core.message.Message;
+import com.nirvana.purist.core.subscriber.Subscriber;
 
 import java.util.Collection;
 
@@ -18,22 +18,15 @@ public class SimpleAutoMessageBroker extends MessageBroker {
     }
 
     @Override
-    public void work() {
-        throw new UnsupportedOperationException("SimpleAutoMessageBroker can not manually work.");
-    }
-
-    @Override
-    public void putMessage(Object message) {
+    public void putMessage(Message message) {
         for (Subscriber subscriber : subscribers) {
-            Message message0 = new Message(this);
-            message0.addCard(new SimpleCard(message));
-            subscriber.onMessage(message0);
+            subscriber.onMessage(message);
         }
     }
 
     @Override
-    public void putMessage(Collection<Object> messages) {
-        for (Object message : messages) {
+    public void putMessage(Collection<Message> messages) {
+        for (Message message : messages) {
             putMessage(message);
         }
     }

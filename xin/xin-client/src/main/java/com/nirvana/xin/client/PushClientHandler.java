@@ -1,8 +1,7 @@
 package com.nirvana.xin.client;
 
-import com.nirvana.xin.core.message.PackageType;
-import com.nirvana.xin.protocol.ProtocolPackage;
-import com.nirvana.xin.protocol.l2.DSTPackage;
+import com.nirvana.purist.core.message.PackageType;
+import com.nirvana.xin.codec.netty.ProtocolPackage;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import org.slf4j.Logger;
@@ -18,8 +17,6 @@ public class PushClientHandler extends SimpleChannelInboundHandler<ProtocolPacka
     protected void channelRead0(ChannelHandlerContext ctx, ProtocolPackage msg) throws Exception {
         if (msg.getPackageType() == PackageType.PUSH_MESSAGE) {
             String content = msg.getPayload().getByteBuf().toString(Charset.forName("UTF-8"));
-            DSTPackage dstPackage = new DSTPackage(content);
-            //System.out.println(dstPackage.getCardBox().getCard(0).getContent());
         }
         msg.release();
     }

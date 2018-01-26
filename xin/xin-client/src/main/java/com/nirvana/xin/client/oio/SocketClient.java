@@ -1,10 +1,10 @@
 package com.nirvana.xin.client.oio;
 
-import com.nirvana.xin.core.message.DefaultCardBox;
-import com.nirvana.xin.core.message.MessageLevel;
-import com.nirvana.xin.core.message.Package;
-import com.nirvana.xin.core.message.PackageType;
-import com.nirvana.xin.protocol.ProtocolPackage;
+import com.nirvana.purist.core.message.DefaultCardBox;
+import com.nirvana.purist.core.message.MessageLevel;
+import com.nirvana.purist.core.message.Package;
+import com.nirvana.purist.core.message.PackageType;
+import com.nirvana.xin.codec.netty.ProtocolPackage;
 
 import java.io.IOException;
 import java.io.OutputStream;

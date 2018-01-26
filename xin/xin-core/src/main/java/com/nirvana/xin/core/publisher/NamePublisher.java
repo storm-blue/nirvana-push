@@ -1,5 +1,7 @@
 package com.nirvana.xin.core.publisher;
 
+import com.nirvana.purist.core.message.Message;
+
 import java.util.Collection;
 
 /**
@@ -8,8 +10,8 @@ import java.util.Collection;
  */
 public interface NamePublisher extends Publisher {
 
-    void publish(String name, Object msg);
+    void publish(String name, Message msg);
 
-    void publish(String name, Collection<Object> msg);
+    void publish(String name, Collection<Message> msg);
 
 }

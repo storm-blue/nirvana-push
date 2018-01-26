@@ -1,10 +1,10 @@
 package com.nirvana.xin.core.agent;
 
-import com.nirvana.xin.core.AbstractDestroyable;
-import com.nirvana.xin.core.message.Card;
-import com.nirvana.xin.core.message.Package;
-import com.nirvana.xin.core.message.MessageLevel;
-import com.nirvana.xin.core.message.PackageType;
+import com.nirvana.purist.core.AbstractDestroyable;
+import com.nirvana.purist.core.message.Card;
+import com.nirvana.purist.core.message.Package;
+import com.nirvana.purist.core.message.MessageLevel;
+import com.nirvana.purist.core.message.PackageType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

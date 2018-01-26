@@ -1,6 +1,6 @@
 package com.nirvana.xin.server;
 
-import com.nirvana.xin.protocol.ProtocolPackage;
+import com.nirvana.xin.codec.netty.ProtocolPackage;
 import com.nirvana.xin.core.agent.Agent;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;

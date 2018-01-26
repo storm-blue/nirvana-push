@@ -1,6 +1,6 @@
 package com.nirvana.xin.client;
 
-import com.nirvana.xin.protocol.decoder.PackageFrameDecoder;
+import com.nirvana.xin.codec.netty.decoder.PackageFrameDecoder;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelPipeline;
 import io.netty.channel.socket.SocketChannel;

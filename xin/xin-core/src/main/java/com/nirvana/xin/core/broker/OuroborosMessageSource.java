@@ -1,6 +1,7 @@
 package com.nirvana.xin.core.broker;
 
-import com.nirvana.xin.utils.tuple.Pair;
+import com.nirvana.purist.core.message.Message;
+import com.nirvana.purist.utils.tuple.Pair;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -16,12 +17,12 @@ public class OuroborosMessageSource implements MarkableMessageSource {
     private Ouroboros ouroboros = new Ouroboros(40, 10000);
 
     @Override
-    public void putMessage(Object message) {
+    public void putMessage(Message message) {
         ouroboros.add(message);
     }
 
     @Override
-    public void putMessage(Collection<Object> messages) {
+    public void putMessage(Collection<Message> messages) {
         for (Object object : messages) {
             ouroboros.add(object);
         }

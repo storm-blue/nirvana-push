@@ -1,8 +1,8 @@
 package com.nirvana.xin.core.subscriber;
 
 import com.nirvana.xin.core.agent.Agent;
-import com.nirvana.xin.core.message.Message;
-import com.nirvana.xin.core.message.MessageLevel;
+import com.nirvana.purist.core.message.Message;
+import com.nirvana.purist.core.message.MessageLevel;
 import com.nirvana.xin.core.session.Session;
 
 import java.util.Map;

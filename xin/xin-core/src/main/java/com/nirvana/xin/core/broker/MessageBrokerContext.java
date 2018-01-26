@@ -1,5 +1,7 @@
 package com.nirvana.xin.core.broker;
 
+import com.nirvana.purist.core.broker.MessageBroker;
+
 import java.util.Iterator;
 import java.util.concurrent.ConcurrentHashMap;
 

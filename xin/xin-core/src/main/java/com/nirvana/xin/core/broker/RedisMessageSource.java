@@ -1,6 +1,7 @@
 package com.nirvana.xin.core.broker;
 
-import com.nirvana.xin.utils.tuple.Pair;
+import com.nirvana.purist.core.message.Message;
+import com.nirvana.purist.utils.tuple.Pair;
 
 import java.util.Collection;
 
@@ -21,12 +22,12 @@ public class RedisMessageSource implements MarkableMessageSource {
     }
 
     @Override
-    public void putMessage(Object message) {
+    public void putMessage(Message message) {
 
     }
 
     @Override
-    public void putMessage(Collection<Object> messages) {
+    public void putMessage(Collection<Message> messages) {
 
     }
 }

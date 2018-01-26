@@ -1,12 +1,11 @@
 package com.nirvana.xin.core.subscriber;
 
+import com.nirvana.purist.core.subscriber.AbstractSubscriber;
 import com.nirvana.xin.core.agent.Agent;
-import com.nirvana.xin.core.broker.MessageBroker;
+import com.nirvana.purist.core.broker.MessageBroker;
 import com.nirvana.xin.core.broker.MessageBrokerContext;
-import com.nirvana.xin.core.message.Message;
-import com.nirvana.xin.core.message.MessageLevel;
-import com.nirvana.xin.core.message.Package;
-import com.nirvana.xin.core.message.PackageType;
+import com.nirvana.purist.core.message.*;
+import com.nirvana.purist.core.message.Package;
 import com.nirvana.xin.core.session.Session;
 
 import java.util.concurrent.atomic.AtomicLong;
@@ -53,7 +52,8 @@ public abstract class AgentSubscriber extends AbstractSubscriber implements Ackn
      */
     protected void sendMessage(Message message, MessageLevel level, Object packageId) {
         Package pkg = new Package(PackageType.PUSH_MESSAGE, level, packageId);
-        pkg.loadBox(message);
+        pkg.addCard(new SimpleCard(message.getPublisherInfo()));
+        pkg.addCard(new SimpleCard(message.getContent()));
         agent.sendPackage(pkg);
     }
 

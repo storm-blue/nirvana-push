@@ -1,7 +1,8 @@
 package com.nirvana.xin.core.publisher;
 
-import com.nirvana.xin.core.broker.MessageBroker;
+import com.nirvana.purist.core.broker.MessageBroker;
 import com.nirvana.xin.core.broker.MessageBrokerContext;
+import com.nirvana.purist.core.message.Message;
 
 import java.util.Collection;
 
@@ -17,15 +18,16 @@ public class DefaultNamePublisher implements NamePublisher {
     }
 
     @Override
-    public void publish(String name, Object message) {
+    public void publish(String name, Message message) {
         MessageBroker broker = brokerContext.getBroker(name);
+        message.grant(broker);
         broker.putMessage(message);
     }
 
     @Override
-    public void publish(String name, Collection<Object> messages) {
+    public void publish(String name, Collection<Message> messages) {
         MessageBroker broker = brokerContext.getBroker(name);
-        for (Object message : messages) {
+        for (Message message : messages) {
             broker.putMessage(message);
         }
     }

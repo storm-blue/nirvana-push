@@ -1,7 +1,7 @@
 package com.nirvana.xin.core.agent;
 
-import com.nirvana.xin.core.Destroyable;
-import com.nirvana.xin.core.message.Package;
+import com.nirvana.purist.core.Destroyable;
+import com.nirvana.purist.core.message.Package;
 
 /**
  * 一个Agent是推送服务器内部组件和外界远程客户端之间沟通的桥梁。

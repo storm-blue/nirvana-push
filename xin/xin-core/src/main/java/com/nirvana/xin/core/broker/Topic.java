@@ -1,7 +1,8 @@
 package com.nirvana.xin.core.broker;
 
 
-import com.nirvana.xin.core.message.Message;
+import com.nirvana.purist.core.broker.MessageHall;
+import com.nirvana.purist.core.message.Message;
 
 import java.util.Collection;
 

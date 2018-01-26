@@ -1,6 +1,7 @@
 package com.nirvana.xin.core.publisher;
 
-import com.nirvana.xin.core.broker.MessageHall;
+import com.nirvana.purist.core.broker.MessageHall;
+import com.nirvana.purist.core.message.Message;
 
 import java.util.Collection;
 
@@ -13,14 +14,14 @@ public class AbstractMultiHallPublisher implements FreePublisher {
     private Collection<MessageHall> halls;
 
     @Override
-    public void publish(Object message) {
+    public void publish(Message message) {
         for (MessageHall hall : halls) {
             hall.putMessage(message);
         }
     }
 
     @Override
-    public void publish(Collection<Object> messages) {
+    public void publish(Collection<Message> messages) {
 
     }
 

@@ -1,7 +1,7 @@
 package com.nirvana.xin.core.session;
 
-import com.nirvana.xin.core.AbstractDestroyable;
-import com.nirvana.xin.core.DestroyFailedException;
+import com.nirvana.purist.core.AbstractDestroyable;
+import com.nirvana.purist.core.DestroyFailedException;
 
 /**
  * Created by Nirvana on 2017/11/16.

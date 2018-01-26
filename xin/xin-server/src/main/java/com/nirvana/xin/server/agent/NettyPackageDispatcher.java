@@ -1,8 +1,8 @@
 package com.nirvana.xin.server.agent;
 
 import com.nirvana.xin.core.agent.PackageDispatcher;
-import com.nirvana.xin.core.message.Package;
-import com.nirvana.xin.protocol.ProtocolPackage;
+import com.nirvana.purist.core.message.Package;
+import com.nirvana.xin.codec.netty.ProtocolPackage;
 import io.netty.channel.socket.SocketChannel;
 
 /**

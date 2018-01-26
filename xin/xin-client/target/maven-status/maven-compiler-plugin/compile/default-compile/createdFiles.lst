@@ -1,8 +1,0 @@
-com\nirvana\xin\client\oio\SocketClient.class
-com\nirvana\xin\client\oio\SubClient.class
-com\nirvana\xin\client\PushClient.class
-com\nirvana\xin\client\oio\SocketPublisher.class
-com\nirvana\xin\client\oio\SocketClient$IThread.class
-com\nirvana\xin\client\PushClientHandler.class
-com\nirvana\xin\client\oio\SocketSubscriber.class
-com\nirvana\xin\client\PushClientInitializer.class

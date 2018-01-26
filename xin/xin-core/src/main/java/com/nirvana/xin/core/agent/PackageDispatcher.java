@@ -1,6 +1,6 @@
 package com.nirvana.xin.core.agent;
 
-import com.nirvana.xin.core.message.Package;
+import com.nirvana.purist.core.message.Package;
 
 /**
  * Created by Nirvana on 2017/11/22.

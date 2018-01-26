@@ -1,8 +1,8 @@
 package com.nirvana.xin.test;
 
-import com.nirvana.xin.core.message.MessageLevel;
-import com.nirvana.xin.core.message.PackageType;
-import com.nirvana.xin.protocol.HeaderPart;
+import com.nirvana.purist.core.message.MessageLevel;
+import com.nirvana.purist.core.message.PackageType;
+import com.nirvana.xin.codec.netty.HeaderPart;
 
 /**
  * com.nirvana.push.test.MainTest.java.

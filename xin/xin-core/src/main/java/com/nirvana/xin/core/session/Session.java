@@ -1,6 +1,6 @@
 package com.nirvana.xin.core.session;
 
-import com.nirvana.xin.core.Destroyable;
+import com.nirvana.purist.core.Destroyable;
 
 /**
  * 连接会话信息。

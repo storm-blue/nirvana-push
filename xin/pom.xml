@@ -14,12 +14,20 @@
 
     <modules>
         <module>xin-client</module>
+        <module>xin-codec</module>
         <module>xin-configserver</module>
         <module>xin-core</module>
-        <module>xin-protocol</module>
         <module>xin-server</module>
         <module>xin-zookeeper</module>
     </modules>
+
+    <dependencies>
+        <dependency>
+            <groupId>com.nirvana</groupId>
+            <artifactId>purist</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+    </dependencies>
 
 
 </project>

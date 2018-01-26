@@ -1,6 +1,6 @@
 package com.nirvana.xin.server;
 
-import com.nirvana.xin.protocol.decoder.PackageFrameDecoder;
+import com.nirvana.xin.codec.netty.decoder.PackageFrameDecoder;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;

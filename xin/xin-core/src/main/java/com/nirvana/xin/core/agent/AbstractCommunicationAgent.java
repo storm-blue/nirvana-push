@@ -2,9 +2,9 @@ package com.nirvana.xin.core.agent;
 
 import com.nirvana.xin.core.agent.exception.CommunicationException;
 import com.nirvana.xin.core.agent.exception.ConnectionException;
-import com.nirvana.xin.core.message.Package;
-import com.nirvana.xin.core.message.MessageLevel;
-import com.nirvana.xin.utils.StringUtils;
+import com.nirvana.purist.core.message.Package;
+import com.nirvana.purist.core.message.MessageLevel;
+import com.nirvana.purist.utils.StringUtils;
 
 /**
  * Created by Nirvana on 2017/11/15.
